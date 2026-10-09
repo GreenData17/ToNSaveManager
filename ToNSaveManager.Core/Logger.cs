@@ -38,8 +38,11 @@ namespace ToNSaveManager {
         static bool AllocConsoleAllowed = false;
         internal static void AllowConsole() {
             if (AllocConsoleAllowed) return;
-            AllocConsole();
-            Console.Title = "ToNSaveManager - OUTPUT";
+            // WinExe has no console on Windows, so open one. Elsewhere stdout already goes to the terminal.
+            if (OperatingSystem.IsWindows()) {
+                AllocConsole();
+                Console.Title = "ToNSaveManager - OUTPUT";
+            }
             AllocConsoleAllowed = true;
         }
 
@@ -47,6 +50,7 @@ namespace ToNSaveManager {
 
         private static readonly StreamWriter LogFileWriter;
         static Logger () {
+            Directory.CreateDirectory(AppCore.DataLocation);
             LogFileWriter = new StreamWriter(Path.Combine(AppCore.DataLocation, "output.log"), append: false);
         }
 
