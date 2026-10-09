@@ -47,7 +47,7 @@ namespace ToNSaveManager {
 
         private static readonly StreamWriter LogFileWriter;
         static Logger () {
-            LogFileWriter = new StreamWriter(Path.Combine(Program.DataLocation, "output.log"), append: false);
+            LogFileWriter = new StreamWriter(Path.Combine(AppCore.DataLocation, "output.log"), append: false);
         }
 
         internal static void Log(string? message, LogType logType = LogType.Log) {

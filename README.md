@@ -62,7 +62,7 @@ If your parameters are not being received properly... try resetting the OSC conf
 <p>You can do this by opening your <b>Radial menu</b>, open <b>OSC</b>, then click <b>Reset Config</b>.</p>
 
 <img src="Resources/osc_reset.png" >
-</p></details>
+</details>
 
 ## Scripting
 - You can extend this tool using JavaScript.

@@ -11,12 +11,12 @@ namespace ToNSaveManager.Models
     {
         const int CURRENT_VERSION = 2;
 
-        const string LegacyDestination = "data.json";
-        const string LegacyFileName = "SaveData.json";
-        const string FileName = "SaveIndex.json";
-        static string DefaultLocation = Path.Combine(Program.DataLocation, FileName);
-        static string LegacyLocation = Path.Combine(Program.LegacyDataLocation, FileName);
-        static string LegacyLocationOld = Path.Combine(Program.LegacyDataLocation + "_Old", FileName);
+        const  string LegacyDestination = "data.json";
+        const  string LegacyFileName    = "SaveData.json";
+        const  string FileName          = "SaveIndex.json";
+        static string DefaultLocation   = Path.Combine(AppCore.DataLocation, FileName);
+        static string LegacyLocation    = Path.Combine(AppCore.LegacyDataLocation, FileName);
+        static string LegacyLocationOld = Path.Combine(AppCore.LegacyDataLocation + "_Old", FileName);
 
         static string m_Destination { get; set; } = FileName;
         internal static string Destination
@@ -168,7 +168,7 @@ namespace ToNSaveManager.Models
             {
                 if (string.IsNullOrEmpty(Settings.Get.DataLocation)) return;
                 selectedFolder = DefaultLocation;
-                selDir = Program.DataLocation;
+                selDir         = AppCore.DataLocation;
             }
             else
             {

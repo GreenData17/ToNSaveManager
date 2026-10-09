@@ -15,6 +15,9 @@
 
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <DefineConstants>$(DefineConstants)$(FeatureFlags.Replace("#",";"))</DefineConstants>
+
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <DefaultItemExcludes>$(DefaultItemExcludes);ToNSaveManager.Core/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -65,6 +68,10 @@
     <PackageReference Include="VRChat.OSCQuery" Version="0.0.7" />
     <PackageReference Include="VRCOscLib" Version="1.6.0" />
     <PackageReference Include="WatsonWebsocket" Version="4.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="ToNSaveManager.Core/ToNSaveManager.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

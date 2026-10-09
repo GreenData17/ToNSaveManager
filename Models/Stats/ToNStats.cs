@@ -61,7 +61,7 @@ namespace ToNSaveManager.Models.Stats {
         #region Settings
         private static string? m_Destination = null;
         internal static string Destination {
-            get => m_Destination ?? (m_Destination = Path.Combine(Program.DataLocation, "Stats.json"));
+            get => m_Destination ?? (m_Destination = Path.Combine(AppCore.DataLocation, "Stats.json"));
         }
         #endregion
 

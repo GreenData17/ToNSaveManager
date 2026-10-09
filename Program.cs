@@ -15,19 +15,15 @@ namespace ToNSaveManager
 {
     internal static class Program
     {
-        const int N = 0;
-        internal const string ProgramName = "ToNSaveManager";
+        const          int    N           = 0;
 
-        internal static readonly string ProgramDirectory = AppContext.BaseDirectory ?? string.Empty;
+        internal static readonly string ProgramDirectory = AppCore.ProgramDirectory;
         internal static readonly string ProgramLocation = Path.Combine(ProgramDirectory, ProgramFile);
         internal static readonly string ProgramLocationTemporary = Path.Combine(ProgramDirectory, "_" + ProgramFile.ToLowerInvariant() + ".old");
         internal static readonly string ProgramLocationTemporaryLegacy = Path.Combine(ProgramDirectory, "__" + ProgramFile);
-        internal const string ProgramFile = ProgramName + ".exe";
+        internal const string ProgramFile = AppCore.ProgramName + ".exe";
 
-        internal static readonly string DataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ProgramName);
-        internal static readonly string LegacyDataLocation = Path.Combine(LogWatcher<ToNLogContext>.GetVRChatDataLocation(), ProgramName);
-
-        internal static Mutex? AppMutex = new Mutex(true, ProgramName);
+        internal static Mutex? AppMutex = new Mutex(true, AppCore.ProgramName);
         internal static void ReleaseMutex() {
             if (AppMutex != null) {
                 AppMutex.ReleaseMutex();
@@ -40,27 +36,24 @@ namespace ToNSaveManager
             return AppMutex != null && !AppMutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        static string[] Arguments = Array.Empty<string>();
-        internal static bool ContainsArg(string arg) => Array.IndexOf(Arguments, arg) != -1;
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
+            Args.SetArguments(args);
+            
             if (CheckMutex()) {
                 // Don't run program if it's already running, instead we focus the already existing window
                 NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST, NativeMethods.WM_FOCUSINST, IntPtr.Zero, IntPtr.Zero);
                 return;
             }
 
-            if (!Directory.Exists(DataLocation)) Directory.CreateDirectory(DataLocation);
+            if (!Directory.Exists(AppCore.DataLocation)) Directory.CreateDirectory(AppCore.DataLocation);
 
             try {
-                Arguments = args;
-
-                if (ContainsArg("--console")) Logger.AllowConsole();
+                if (Args.ContainsArg("--console")) Logger.AllowConsole();
                 Logger.Log("Initializing logging.");
 
                 Directory.SetCurrentDirectory(ProgramDirectory);
@@ -96,7 +89,7 @@ namespace ToNSaveManager
             } catch (Exception e) {
                 // What the heck happened?
                 MessageBox.Show(e.ToString(), "APP STARTUP FAILED!");
-                File.WriteAllText(Path.Combine(DataLocation, "output.error"), e.ToString());
+                File.WriteAllText(Path.Combine(AppCore.DataLocation, "output.error"), e.ToString());
             }
         }
 

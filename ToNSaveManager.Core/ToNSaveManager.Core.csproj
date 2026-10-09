@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>ToNSaveManager</RootNamespace>
+        <AssemblyName>ToNSaveManager.Core</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="ToNSaveManager" />
+    </ItemGroup>
+
+</Project>

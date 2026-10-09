@@ -48,7 +48,7 @@ namespace ToNSaveManager {
                 Program.ReleaseMutex(); // Release mutex so downloaded app opens properly
 
                 MessageBox.Show(string.Format(LANG.S("MESSAGE.UPDATE_SUCCESS") ?? "Successfully downloaded update: {0}\nOpen 'ToNSaveManager' again to continue...", release.tag_name),
-                    Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    AppCore.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Application.Exit();
                 return;
             } catch (Exception ex) {
@@ -67,8 +67,8 @@ namespace ToNSaveManager {
         internal static void CheckPostUpdate(string[] args) {
             Logger.Info("Checking post-update.");
 
-            bool updateLegacy = Program.ContainsArg(LEGACY_POST_UPDATE_ARG);
-            bool isPostUpdate = File.Exists(POST_UPDATE_FILE) || Program.ContainsArg("--clean-update");
+            bool updateLegacy = Args.ContainsArg(LEGACY_POST_UPDATE_ARG);
+            bool isPostUpdate = File.Exists(POST_UPDATE_FILE) || Args.ContainsArg("--clean-update");
             if (!updateLegacy && !isPostUpdate) return;
             Logger.Info("Running post-update cleanup.");
 

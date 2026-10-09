@@ -239,7 +239,7 @@ namespace ToNSaveManager.Models
         /// <returns>Deserialized Settings object, or else Default Settings object.</returns>
         public static Settings Import()
         {
-            string destination = Path.Combine(Program.DataLocation, Destination);
+            string destination = Path.Combine(AppCore.DataLocation, Destination);
             Settings? settings;
 
             try

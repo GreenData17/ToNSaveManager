@@ -34,9 +34,6 @@
         private DirectoryInfo m_LogDirectoryInfo;
         private readonly Dictionary<string, T> m_LogContextMap = new Dictionary<string, T>();
 
-        internal static string GetVRChatDataLocation() =>
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\VRChat";
-
         #region From Settings
         bool SkipParsedLogs => Settings.Get.SkipParsedLogs;
 
@@ -48,7 +45,7 @@
 
         public LogWatcher(string homeWorldID)
         {
-            var logPath = GetVRChatDataLocation() + @"\VRChat";
+            var logPath = Path.Combine(AppCore.GetVRChatDataLocation(), "VRChat");
             m_LogDirectoryInfo = new DirectoryInfo(logPath);
             HomeWorldID = homeWorldID;
         }
