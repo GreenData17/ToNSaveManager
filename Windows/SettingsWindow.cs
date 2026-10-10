@@ -75,56 +75,56 @@ namespace ToNSaveManager.Windows
         private static string ColorFormatTooltip = "Sends the current Terror color represented as {3}.\nColor will be sent as 3 FLOAT parameters:\n- {0}\n- {1}\n- {2}";
 
         internal void LocalizeContent() {
-            LANGUI.C(this, "MAIN.SETTINGS");
+            this.Localize("MAIN.SETTINGS");
 
             foreach (KeyValuePair<string, Control> pair in LocalizedControlCache) {
-                LANGUI.C(pair.Value, pair.Key, toolTip);
+                pair.Value.Localize(pair.Key, toolTip);
                 // if (pair.Key == "SETTINGS.PLAYAUDIO") PostAudioLocationSet();
             }
 
-            LANGUI.C(labelGroupGeneral, "SETTINGS.GROUP.GENERAL", toolTip);
-            LANGUI.C(labelGroupDiscord, "SETTINGS.GROUP.DISCORD", toolTip);
-            LANGUI.C(labelGroupNotifications, "SETTINGS.GROUP.NOTIFICATIONS", toolTip);
-            LANGUI.C(labelGroupFormat, "SETTINGS.GROUP.TIME_FORMAT", toolTip);
-            LANGUI.C(labelGroupStyle, "SETTINGS.GROUP.STYLE", toolTip);
-            LANGUI.C(labelGroupOSC, "SETTINGS.GROUP.OSC", toolTip);
+            labelGroupGeneral.Localize("SETTINGS.GROUP.GENERAL", toolTip);
+            labelGroupDiscord.Localize("SETTINGS.GROUP.DISCORD", toolTip);
+            labelGroupNotifications.Localize("SETTINGS.GROUP.NOTIFICATIONS", toolTip);
+            labelGroupFormat.Localize("SETTINGS.GROUP.TIME_FORMAT", toolTip);
+            labelGroupStyle.Localize("SETTINGS.GROUP.STYLE", toolTip);
+            labelGroupOSC.Localize("SETTINGS.GROUP.OSC", toolTip);
 
             // OSC LINKS
-            LANGUI.C(linkEditChatbox, "SETTINGS.OSCSENDCHATBOX_EDIT", toolTip);
-            LANGUI.C(linkSetDamageInterval, "SETTINGS.OSCDAMAGEDEVENT_EDIT", toolTip);
-            LANGUI.C(linkSetDamageOutput, "SETTINGS.OSCDAMAGEDEVENT_OUTPUT", toolTip);
-            LANGUI.C(linkSetMasterInterval, "SETTINGS.OSCMASTERCHANGE_EDIT", toolTip);
-            LANGUI.C(linkEditDeathID, "SETTINGS.OSCDEATHEVENT_EDIT", toolTip);
-            LANGUI.C(linkSetDeathDecay, "SETTINGS.OSCDEATHEVENT_DECAY", toolTip);
-            LANGUI.C(linkSetDeathCooldown, "SETTINGS.OSCDEATHEVENT_COOLDOWN", toolTip);
+            linkEditChatbox.Localize("SETTINGS.OSCSENDCHATBOX_EDIT", toolTip);
+            linkSetDamageInterval.Localize("SETTINGS.OSCDAMAGEDEVENT_EDIT", toolTip);
+            linkSetDamageOutput.Localize("SETTINGS.OSCDAMAGEDEVENT_OUTPUT", toolTip);
+            linkSetMasterInterval.Localize("SETTINGS.OSCMASTERCHANGE_EDIT", toolTip);
+            linkEditDeathID.Localize("SETTINGS.OSCDEATHEVENT_EDIT", toolTip);
+            linkSetDeathDecay.Localize("SETTINGS.OSCDEATHEVENT_DECAY", toolTip);
+            linkSetDeathCooldown.Localize("SETTINGS.OSCDEATHEVENT_COOLDOWN", toolTip);
 
-            LANGUI.C(linkAddInfoFile, "SETTINGS.ROUNDINFOTOFILE_ADD", toolTip);
-            LANGUI.C(linkOpenRGB, "SETTINGS.OPENRGB_JSONFILE", toolTip);
-            LANGUI.C(linkLogUpdateRate, "SETTINGS.LOGUPDATERATE", toolTip);
-            LANGUI.C(linkAutoNoteEdit, "SETTINGS.SAVEROUNDNOTE_EDIT", toolTip);
+            linkAddInfoFile.Localize("SETTINGS.ROUNDINFOTOFILE_ADD", toolTip);
+            linkOpenRGB.Localize("SETTINGS.OPENRGB_JSONFILE", toolTip);
+            linkLogUpdateRate.Localize("SETTINGS.LOGUPDATERATE", toolTip);
+            linkAutoNoteEdit.Localize("SETTINGS.SAVEROUNDNOTE_EDIT", toolTip);
 
-            LANGUI.C(linkEditDiscordDetails, "SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
-            LANGUI.C(linkEditDiscordState, "SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
-            LANGUI.C(linkEditDiscordImage, "SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
-            LANGUI.C(linkEditDiscordIcon, "SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
-            LANGUI.C(linkEditDiscordStart, "SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
+            linkEditDiscordDetails.Localize("SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
+            linkEditDiscordState.Localize("SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
+            linkEditDiscordImage.Localize("SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
+            linkEditDiscordIcon.Localize("SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
+            linkEditDiscordStart.Localize("SETTINGS.DISCORDRICHPRESENCE_EDIT", toolTip);
 
 
-            LANGUI.C(linkSelectAudioSave, "SETTINGS.PLAYAUDIO_SELECT", toolTip);
-            LANGUI.C(linkSelectAudioCopy, "SETTINGS.PLAYAUDIO_SELECT", toolTip);
+            linkSelectAudioSave.Localize("SETTINGS.PLAYAUDIO_SELECT", toolTip);
+            linkSelectAudioCopy.Localize("SETTINGS.PLAYAUDIO_SELECT", toolTip);
             UpdatePlayLink();
 
-            LANGUI.C(linkOSCFormat, "SETTINGS.OSCSENDCOLORFORMAT", toolTip);
+            linkOSCFormat.Localize("SETTINGS.OSCSENDCOLORFORMAT", toolTip);
             string? tt = LANG.S("SETTINGS.OSCSENDCOLOR.TT");
             if (tt != null) ColorFormatTooltip = tt;
             LinkOSCFormat_LinkClicked(null, null);
 
-            LANGUI.C(btnCheckForUpdates, "SETTINGS.CHECK_UPDATE", toolTip);
-            LANGUI.C(btnOpenData, "SETTINGS.OPEN_DATA_BTN", toolTip);
+            btnCheckForUpdates.Localize("SETTINGS.CHECK_UPDATE", toolTip);
+            btnOpenData.Localize("SETTINGS.OPEN_DATA_BTN", toolTip);
 
-            LANGUI.C(setDataLocationToolStripMenuItem, "SETTINGS.CUSTOM_DATA_FOLDER");
-            LANGUI.C(ctxItemPickFolder, "SETTINGS.CUSTOM_DATA_PICK_FOLDER");
-            LANGUI.C(ctxItemResetToDefault, "SETTINGS.CUSTOM_DATA_RESET_DEFAULT");
+            setDataLocationToolStripMenuItem.Localize("SETTINGS.CUSTOM_DATA_FOLDER");
+            ctxItemPickFolder.Localize("SETTINGS.CUSTOM_DATA_PICK_FOLDER");
+            ctxItemResetToDefault.Localize("SETTINGS.CUSTOM_DATA_RESET_DEFAULT");
 
             string? versionString = Program.GetVersion()?.ToString();
             if (!string.IsNullOrEmpty(versionString))
@@ -134,7 +134,7 @@ namespace ToNSaveManager.Windows
         }
 
         private void UpdateAudioLink(LinkLabel audioLinkLabel, string? location) {
-            LANGUI.C(audioLinkLabel, "SETTINGS.PLAYAUDIO_SELECT", toolTip);
+            audioLinkLabel.Localize("SETTINGS.PLAYAUDIO_SELECT", toolTip);
             if (!string.IsNullOrEmpty(location)) {
                 toolTip.SetToolTip(audioLinkLabel, LANG.S("SETTINGS.PLAYAUDIO_SELECT.ALT"));
                 string fileName = Path.GetFileName(location);
@@ -738,7 +738,7 @@ namespace ToNSaveManager.Windows
             if (LANG.SelectedKey != langKey.Key) {
                 Logger.Log("Changing language to: " + langKey);
                 LANG.Select(langKey.Key);
-                LANGUI.ReloadAll();
+                Program.LocalizeAllWindows();
                 Settings.Get.SelectedLanguage = langKey.Key;
                 Settings.Export();
             }

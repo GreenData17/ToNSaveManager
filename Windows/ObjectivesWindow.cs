@@ -40,7 +40,7 @@ namespace ToNSaveManager
         }
 
         internal void LocalizeContent() {
-            LANGUI.C(this, "OBJECTIVES.TITLE");
+            this.Localize("OBJECTIVES.TITLE");
 
             foreach (Objective obj in listBox1.Items) {
                 (string? tx, string? tt) = LANG.T("OBJECTIVES." + obj.Name.ToUpperInvariant().Replace(' ', '_'));

@@ -8,6 +8,7 @@ using ToNSaveManager.Localization;
 using ToNSaveManager.Models;
 using ToNSaveManager.Utils;
 using ToNSaveManager.Utils.API;
+using ToNSaveManager.Windows;
 using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Utils.LogParser;
 
@@ -65,7 +66,10 @@ namespace ToNSaveManager
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
                 LANG.Initialize();
-                LANGUI.Initialize();
+                LANG.LanguageAdded += () => {
+                    SettingsWindow.Instance?.FillLanguageBox();
+                    LocalizeAllWindows();
+                };
                 Updater.CheckPostUpdate(args);
 
                 Logger.Log("Initializing application rendering.");
@@ -194,6 +198,15 @@ namespace ToNSaveManager
             }
 
             return false;
+        }
+
+        internal static void LocalizeAllWindows()
+        {
+            MainWindow.Instance?.LocalizeContent();
+            EditWindow.Instance?.LocalizeContent();
+            ObjectivesWindow.Instance?.LocalizeContent();
+            SettingsWindow.Instance?.LocalizeContent();
+            StatsWindow.Instance?.LocalizeContent();
         }
     }
 
