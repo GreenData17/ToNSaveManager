@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <EmbeddedResource Include="..\Localization\Language\*.json"
+                          LinkBase="Localization\Language"
                           LogicalName="ToNSaveManager.Localization.Language.%(Filename)%(Extension)" />
     </ItemGroup>
 
