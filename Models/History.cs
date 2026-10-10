@@ -52,7 +52,7 @@ namespace ToNSaveManager.Models
                             m_Database = JsonConvert.DeserializeObject<List<Entry>>(content) ?? new List<Entry>();
                         } catch
                         {
-                            Program.CreateFileBackup(path);
+                            AppCore.CreateFileBackup(path);
                             m_Database = new List<Entry>();
                         }
 
@@ -123,7 +123,7 @@ namespace ToNSaveManager.Models
             SetDirty();
         }
 
-        internal void SetLogContext(ToNLogContext context)
+        internal void SetLogContext(LogContext context)
         {
             DisplayName = context.DisplayName;
             SetDirty();

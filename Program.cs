@@ -194,23 +194,6 @@ namespace ToNSaveManager
 
             return false;
         }
-
-        internal static bool CreateFileBackup(string filePath)
-        {
-            Logger.Info("Creating Backup For: " + filePath);
-
-            try
-            {
-                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-                    File.Copy(filePath, filePath + ".backup_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 
     public partial class MainWindow : Form

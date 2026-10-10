@@ -269,7 +269,7 @@ namespace ToNSaveManager.Models
             {
                 MessageBox.Show((LANG.S("MESSAGE.IMPORT_SAVE_ERROR") ?? "Error trying to import your save.") + "\n\n" + ex, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                if (!Program.CreateFileBackup(filePath))
+                if (!AppCore.CreateFileBackup(filePath))
                 {
                     Application.Exit();
                     return new SaveData();
@@ -281,7 +281,7 @@ namespace ToNSaveManager.Models
 
             if (data.Version != CURRENT_VERSION)
             {
-                Program.CreateFileBackup(filePath);
+                AppCore.CreateFileBackup(filePath);
                 data.Version = CURRENT_VERSION;
                 data.SetDirty();
             }
