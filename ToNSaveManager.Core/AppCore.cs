@@ -24,6 +24,18 @@ namespace ToNSaveManager
         internal static bool Started;
 
         /// <summary>
+        /// Raised when Core failed to write one of its files (settings, saves, stats).
+        /// The frontend decides how to tell the user.
+        /// </summary>
+        internal static event Action<string, Exception>? WriteFailed;
+
+        internal static void ReportWriteFailed(string path, Exception e)
+        {
+            Logger.Error($"Failed to write '{path}': {e}");
+            WriteFailed?.Invoke(path, e);
+        }
+
+        /// <summary>
         /// Opens a resource embedded in Core (files under Resources/).
         /// </summary>
         internal static Stream? GetEmbeddedResource(string name)

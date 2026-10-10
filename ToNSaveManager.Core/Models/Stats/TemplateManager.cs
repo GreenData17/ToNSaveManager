@@ -1,6 +1,4 @@
-﻿using Jint;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ToNSaveManager.Models.Stats {
     internal class TemplateManager {

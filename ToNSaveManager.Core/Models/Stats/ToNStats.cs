@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Jint;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ToNSaveManager.Models.Index;
-using ToNSaveManager.Utils.API;
-using Jint;
 
 namespace ToNSaveManager.Models.Stats {
     internal class StatPropertyContainer {
@@ -55,6 +49,9 @@ namespace ToNSaveManager.Models.Stats {
 
     internal static class ToNStats {
         static readonly LoggerSource Log = new LoggerSource(nameof(ToNStats));
+
+        /// <summary>Raised when a stat value changed through <see cref="Set{T}"/>, with the stat key and its new value.</summary>
+        internal static event Action<string, object?>? StatChanged;
 
         #region Settings
         private static string? m_Destination = null;
@@ -228,7 +225,7 @@ namespace ToNSaveManager.Models.Stats {
 
                     value.Instance?.SetDirty();
 
-                    WebSocketAPI.EventStats.Send(key, val);
+                    StatChanged?.Invoke(key, val);
                 }
             }
         }

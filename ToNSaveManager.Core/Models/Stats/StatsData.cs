@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ToNSaveManager.Localization;
+﻿using Newtonsoft.Json;
 
 namespace ToNSaveManager.Models.Stats
 {
@@ -89,7 +81,7 @@ namespace ToNSaveManager.Models.Stats
                     File.WriteAllText(Destination, json);
                 }
             } catch (Exception e) {
-                MessageBox.Show((LANG.S("MESSAGE.WRITE_SETTINGS_ERROR") ?? "An error occurred while trying to write your stats to a file.\n\nMake sure that the program contains permissions to write files in the current folder it's located at.") + "\n\n" + e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppCore.ReportWriteFailed(Destination, e);
             }
         }
     }

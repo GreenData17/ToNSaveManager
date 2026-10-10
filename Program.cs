@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Models;
+using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils;
 using ToNSaveManager.Utils.API;
 using ToNSaveManager.Windows;
@@ -51,6 +52,12 @@ namespace ToNSaveManager
 
             try {
                 AppCore.Initialize(args);
+                AppCore.WriteFailed += (path, e) => MessageBox.Show(
+                    (LANG.S("MESSAGE.WRITE_SETTINGS_ERROR") ?? "An error occurred while trying to write a file.\n\nMake sure that the program contains permissions to write files in the current folder it's located at.") + "\n\n" + e,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // TODO: move into Core together with WebSocketAPI
+                ToNStats.StatChanged += WebSocketAPI.EventStats.Send;
 
                 LANG.LanguageAdded += () => SettingsWindow.Instance?.FillLanguageBox();
                 LANG.LanguageChanged += LocalizeAllWindows;
