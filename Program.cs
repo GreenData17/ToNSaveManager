@@ -63,7 +63,7 @@ namespace ToNSaveManager
                 Logger.Log("Initializing font.");
                 InitializeFont();
 
-                MainWindow.Started = false;
+                AppCore.Started = false;
 
                 if (!StartCheckForUpdate()) {
                     Application.ApplicationExit += OnApplicationExit;

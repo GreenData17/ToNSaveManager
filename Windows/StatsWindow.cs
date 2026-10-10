@@ -39,15 +39,15 @@ namespace ToNSaveManager
         }
 
         internal static void AddRound(bool survived) {
-            ToNStats.AddRound(survived, MainWindow.Started);
+            ToNStats.AddRound(survived, AppCore.Started);
             RefreshTable();
         }
         internal static void AddStun(bool isLocal) {
-            ToNStats.AddStun(isLocal, MainWindow.Started);
+            ToNStats.AddStun(isLocal, AppCore.Started);
             RefreshTable();
         }
         internal static void AddDamage(int damage) {
-            ToNStats.AddDamage(damage, MainWindow.Started);
+            ToNStats.AddDamage(damage, AppCore.Started);
             RefreshTable();
         }
 
@@ -221,7 +221,7 @@ namespace ToNSaveManager
         }
 
         internal static void UpdateChatboxContent() {
-            if (IsRoundActive || !MainWindow.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
+            if (IsRoundActive || !AppCore.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
             string template = TemplateManager.ReplaceTemplate(Settings.Get.OSCMessageInfoTemplate.Template).Replace("\\n", "\n");
             LilOSC.SetChatboxMessage(template);
         }

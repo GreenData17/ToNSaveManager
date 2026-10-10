@@ -32,7 +32,7 @@ namespace ToNSaveManager.Windows
             public ToNRoundType Value;
 
             public RoundTypeProxy(ToNRoundType roundType) {
-                DisplayName = roundType == ToNRoundType.Intermission ? "Random" : MainWindow.GetRoundTypeName(roundType);
+                DisplayName = roundType == ToNRoundType.Intermission ? "Random" : roundType.GetDisplayName();
                 Value = roundType;
             }
 

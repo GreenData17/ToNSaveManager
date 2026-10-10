@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ToNSaveManager.Models;
 using ToNSaveManager.Models.Index;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace ToNSaveManager.Utils.Discord {
     internal class DSRichPresence {
@@ -98,7 +97,7 @@ namespace ToNSaveManager.Utils.Discord {
         internal static void SetInstanceID(string instanceId, bool isHome) {
             IsPlayingTerrors = isHome;
             TerrorsInstanceID = instanceId;
-            if (!MainWindow.Started) return;
+            if (!AppCore.Started) return;
 
             UpdateTimestamp();
             Log.Debug("Setting instance home: " + isHome);

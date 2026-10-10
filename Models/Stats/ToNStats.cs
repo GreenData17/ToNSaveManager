@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using ToNSaveManager.Models.Index;
 using ToNSaveManager.Utils.API;
 using Jint;
-using System.Windows.Forms.VisualStyles;
 
 namespace ToNSaveManager.Models.Stats {
     internal class StatPropertyContainer {
@@ -160,7 +158,7 @@ namespace ToNSaveManager.Models.Stats {
         const string KEY_ROUND_INT = nameof(StatsRound.RoundInt);
         const string KEY_TERROR_NAME = nameof(StatsRound.TerrorName);
         public static void AddTerrors(TerrorMatrix terrorMatrix) {
-            Set(KEY_ROUND_TYPE, MainWindow.GetRoundTypeName(terrorMatrix.RoundType));
+            Set(KEY_ROUND_TYPE, terrorMatrix.RoundType.GetDisplayName());
             Set(KEY_ROUND_INT, (int)terrorMatrix.RoundType);
             Set(KEY_TERROR_NAME, terrorMatrix.Length > 0 ? terrorMatrix.GetTerrorNames() : (terrorMatrix.MapID < 0 ? "Overseer" : "???"));
         }

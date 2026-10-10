@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToNSaveManager.Localization;
 
 namespace ToNSaveManager.Models.Index {
     public enum ToNRoundType {
@@ -52,5 +53,41 @@ namespace ToNSaveManager.Models.Index {
         L, // Lost < This one never happens, but it will be there for legacy purposes
         X, // Forgot to save lol
         B, // REBORN (Died with Maxwell)
+    }
+
+    internal static class ToNRoundTypeExtensions {
+        static readonly Dictionary<ToNRoundType, string> RoundTypeNames = new Dictionary<ToNRoundType, string>();
+        static string? RoundTypeNamesLanguage;
+
+        /// <summary>
+        /// Gets the localized display name of a round type, cached per selected language.
+        /// </summary>
+        internal static string GetDisplayName(this ToNRoundType roundType) {
+            if (RoundTypeNamesLanguage != LANG.SelectedKey) {
+                RoundTypeNames.Clear();
+                RoundTypeNamesLanguage = LANG.SelectedKey;
+
+                ToNRoundType[] values = Enum.GetValues<ToNRoundType>();
+                foreach (ToNRoundType rt in values) {
+                    RoundTypeNames[rt] = LANG.S("ROUND_TYPE." + rt.ToString().ToUpperInvariant()) ?? rt.ToString();
+#if NO_SPOILERS
+                    switch (rt) {
+                        case ToNRoundType.Double_Trouble:
+                        case ToNRoundType.EX:
+                        case ToNRoundType.Ghost:
+                        case ToNRoundType.Ghost_Alternate:
+                        case ToNRoundType.Unbound:
+                        case ToNRoundType.GIGABYTE:
+                            RoundTypeNames[rt] = "SPOILERS";
+                            break;
+                        default:
+                            break;
+                    }
+#endif
+                }
+            }
+
+            return RoundTypeNames[roundType];
+        }
     }
 }

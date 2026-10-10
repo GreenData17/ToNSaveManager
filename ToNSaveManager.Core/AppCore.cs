@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ToNSaveManager.Localization;
 
@@ -15,6 +16,21 @@ namespace ToNSaveManager
         internal static readonly string DataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ProgramName);
         // Legacy path is mostly for Windows users, or for linux users that managed to get it to run via proton
         internal static string LegacyDataLocation => Path.Combine(GetVRChatDataLocation(), ProgramName);
+
+        /// <summary>
+        /// True once the frontend finished starting up and the log watcher is running.
+        /// Integrations (OSC, WebSocket, RGB, ...) stay quiet until then.
+        /// </summary>
+        internal static bool Started;
+
+        /// <summary>
+        /// Opens a resource embedded in Core (files under Resources/).
+        /// </summary>
+        internal static Stream? GetEmbeddedResource(string name)
+        {
+            return Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream($"ToNSaveManager.Resources.{name}");
+        }
 
         /// <summary>
         /// Initializes Core. Every frontend calls this first, before using any other Core API.

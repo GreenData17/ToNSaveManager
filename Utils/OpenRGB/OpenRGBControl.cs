@@ -156,7 +156,7 @@ namespace ToNSaveManager.Utils.OpenRGB
         internal static void SetTerrorMatrix(TerrorMatrix matrix)
         {
             Terrors = matrix;
-            if (!MainWindow.Started || !Settings.Get.OpenRGBEnabled) return;
+            if (!AppCore.Started || !Settings.Get.OpenRGBEnabled) return;
 
             Initialize();
 

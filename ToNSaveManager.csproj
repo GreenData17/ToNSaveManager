@@ -44,19 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\notification_copy.wav" />
-    <EmbeddedResource Include="Resources\notification_secret.wav" />
-    <EmbeddedResource Include="Resources\index.json" />
-    <EmbeddedResource Include="Resources\objectives.json" />
-    <EmbeddedResource Include="Resources\xs_icon.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\notification.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
     <PackageReference Include="Jint" Version="4.2.2" />
     <PackageReference Include="NAudio" Version="2.2.1" />

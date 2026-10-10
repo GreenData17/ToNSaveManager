@@ -6,6 +6,7 @@
         <AssemblyName>ToNSaveManager.Core</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DefineConstants>$(DefineConstants)$(FeatureFlags.Replace("#",";"))</DefineConstants>
     </PropertyGroup>
     
     <ItemGroup>
@@ -20,6 +21,9 @@
         <EmbeddedResource Include="..\Localization\Language\*.json"
                           LinkBase="Localization\Language"
                           LogicalName="ToNSaveManager.Localization.Language.%(Filename)%(Extension)" />
+        <EmbeddedResource Include="..\Resources\index.json;..\Resources\objectives.json;..\Resources\xs_icon.png;..\Resources\notification.wav;..\Resources\notification_copy.wav;..\Resources\notification_secret.wav"
+                          LinkBase="Resources"
+                          LogicalName="ToNSaveManager.Resources.%(Filename)%(Extension)" />
     </ItemGroup>
 
 </Project>

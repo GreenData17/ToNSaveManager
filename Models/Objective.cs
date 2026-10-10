@@ -68,7 +68,7 @@ namespace ToNSaveManager.Models
 
         public static List<Objective> ImportFromMemory()
         {
-            using (Stream? stream = Program.GetEmbededResource("objectives.json"))
+            using (Stream? stream = AppCore.GetEmbeddedResource("objectives.json"))
             {
                 if (stream == null) return new List<Objective>();
 

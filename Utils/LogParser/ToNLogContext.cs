@@ -52,7 +52,7 @@ namespace ToNSaveManager.Utils.LogParser
                 WebSocketAPI.SendValue("INSTANCE", instanceID);
                 DSRichPresence.SetInstanceID(instanceID, isHomeWorld);
 
-                if (isHomeWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && MainWindow.Started)
+                if (isHomeWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && AppCore.Started)
                     MainWindow.CopyRecentData();
             }
         }
@@ -209,7 +209,7 @@ namespace ToNSaveManager.Utils.LogParser
         // Triggered at end of round
         public void SaveSummary() {
             Summary = new RoundSummary(Result, Terrors, Location,
-                Settings.Get.SaveRoundNote ? (IsRecent && MainWindow.Started ? Settings.Get.RoundNoteTemplate.GetString() : Terrors.GetTerrorNames()) : null); 
+                Settings.Get.SaveRoundNote ? (IsRecent && AppCore.Started ? Settings.Get.RoundNoteTemplate.GetString() : Terrors.GetTerrorNames()) : null); 
         }
         // Triggered when consumed by the save code
         public void ClearSummary() {

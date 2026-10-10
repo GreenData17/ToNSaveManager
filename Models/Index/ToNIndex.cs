@@ -9,7 +9,7 @@ namespace ToNSaveManager.Models.Index {
 
         public static ToNIndex Import()
         {
-            using (Stream? stream = Program.GetEmbededResource("index.json"))
+            using (Stream? stream = AppCore.GetEmbeddedResource("index.json"))
             {
                 if (stream == null) return new ToNIndex();
 

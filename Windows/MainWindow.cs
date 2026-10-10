@@ -23,7 +23,6 @@ namespace ToNSaveManager {
         // internal static readonly AppSettings Settings = AppSettings.Import();
         internal static readonly SaveData SaveData = SaveData.Import();
         internal static MainWindow? Instance;
-        internal static bool Started;
 
         public MainWindow() {
             InitializeComponent();
@@ -79,7 +78,7 @@ namespace ToNSaveManager {
         private void mainWindow_Shown(object sender, EventArgs e) {
             LocalizeContent();
 
-            if (Started) return;
+            if (AppCore.Started) return;
             JSEngine.Initialize();
 
             FirstImport();
@@ -89,7 +88,7 @@ namespace ToNSaveManager {
             LogWatcher.Interval = Settings.Get.LogUpdateRate;
             LogWatcher.Start();
 
-            Started = true;
+            AppCore.Started = true;
             SetTitle(null);
 
             if (Settings.Get.AutoCopy && Settings.Get.CopyOnOpen)
@@ -105,32 +104,6 @@ namespace ToNSaveManager {
                 EmulatorWindow.Open(this);
 
             JSEngine.InvokeOnReady();
-        }
-
-        static readonly Dictionary<ToNRoundType, string> RoundTypeNames = new Dictionary<ToNRoundType, string>();
-        internal static string GetRoundTypeName(ToNRoundType roundType) {
-            if (RoundTypeNames.Count == 0) {
-                ToNRoundType[] values = Enum.GetValues<ToNRoundType>();
-                foreach (ToNRoundType rt in values) {
-                    RoundTypeNames[rt] = LANG.S("ROUND_TYPE." + rt.ToString().ToUpperInvariant()) ?? rt.ToString();
-#if NO_SPOILERS
-                    switch (rt) {
-                        case ToNRoundType.Double_Trouble:
-                        case ToNRoundType.EX:
-                        case ToNRoundType.Ghost:
-                        case ToNRoundType.Ghost_Alternate:
-                        case ToNRoundType.Unbound:
-                        case ToNRoundType.GIGABYTE:
-                            RoundTypeNames[rt] = "SPOILERS";
-                            break;
-                        default:
-                            break;
-                    }
-#endif
-                }
-            }
-
-            return RoundTypeNames[roundType];
         }
 
         internal void LocalizeContent() {
@@ -152,8 +125,6 @@ namespace ToNSaveManager {
 
             Entry.LocalizeContent();
             DSWebHook.LocalizeContent();
-
-            RoundTypeNames.Clear();
 
             RightToLeft = LANG.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
         }
@@ -528,7 +499,7 @@ namespace ToNSaveManager {
         }
 
         internal static void PlayCopyNotification() {
-            if (!Started || !Settings.Get.PlayAudioCopy) return;
+            if (!AppCore.Started || !Settings.Get.PlayAudioCopy) return;
 
             try {
                 NotificationManager.PlayCopy();
@@ -538,7 +509,7 @@ namespace ToNSaveManager {
         }
 
         internal static void PlaySaveNotification() {
-            if (!Started || !Settings.Get.PlayAudioSave) return;
+            if (!AppCore.Started || !Settings.Get.PlayAudioSave) return;
 
             try {
                 NotificationManager.PlaySave();
@@ -548,7 +519,7 @@ namespace ToNSaveManager {
         }
 
         internal static void SendXSNotification(bool test = false) {
-            if (!Started || !Settings.Get.XSOverlay) return;
+            if (!AppCore.Started || !Settings.Get.XSOverlay) return;
             const string message = "<color=#ff9999><b>ToN</b></color><color=grey>:</color> <color=#adff2f>Save Data Stored</color>";
             const string msgtest = "<color=#ff9999><b>ToN</b></color><color=grey>:</color> <color=#adff2f>Notifications Enabled</color>";
 
@@ -646,7 +617,7 @@ namespace ToNSaveManager {
         }
 
         private void LogWatcher_OnTick(object? sender, EventArgs e) {
-            if (Settings.Get.CopyOnSave && Started)
+            if (Settings.Get.CopyOnSave && AppCore.Started)
                 CopyRecent(false);
 
             Export();
@@ -894,7 +865,7 @@ namespace ToNSaveManager {
         private bool HandleStatCollection(string line, DateTime timestamp, ToNLogContext context) {
             if (!context.IsRecent) return false;
 
-            if (Started) {
+            if (AppCore.Started) {
                 if (Settings.Get.WebSocketEnabled && line.StartsWith(ROUND_DEATH_MSG_KEYWORD)) {
                     int index = line.IndexOf(']', ROUND_DEATH_MSG_KEYWORD.Length);
                     int length = index - ROUND_DEATH_MSG_KEYWORD.Length;

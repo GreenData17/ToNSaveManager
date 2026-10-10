@@ -4,9 +4,9 @@ using ToNSaveManager.Models;
 namespace ToNSaveManager.Utils {
     internal static class NotificationManager {
         // Get default notification in the embeded resources
-        static readonly Stream? SecretSaveStream = Program.GetEmbededResource("notification_secret.wav");
-        static readonly Stream? DefaultSaveStream = Program.GetEmbededResource("notification.wav");
-        static readonly Stream? DefaultCopyStream = Program.GetEmbededResource("notification_copy.wav");
+        static readonly Stream? SecretSaveStream = AppCore.GetEmbeddedResource("notification_secret.wav");
+        static readonly Stream? DefaultSaveStream = AppCore.GetEmbeddedResource("notification.wav");
+        static readonly Stream? DefaultCopyStream = AppCore.GetEmbeddedResource("notification_copy.wav");
 
         static readonly SoundPlayer StreamPlayer = new SoundPlayer();
         static readonly SoundPlayer AudioPlayer = new SoundPlayer();

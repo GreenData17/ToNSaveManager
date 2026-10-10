@@ -210,7 +210,7 @@ namespace ToNSaveManager.Utils.API {
 
             public ToNRoundType Value { get; set; }
             public string Name => Value.ToString();
-            public string DisplayName => MainWindow.GetRoundTypeName(Value);
+            public string DisplayName => Value.GetDisplayName();
             public uint DisplayColor { get; set; } // Maybe a bit innacurate
 
             internal static void Send(ToNRoundType roundType) {
@@ -309,7 +309,7 @@ namespace ToNSaveManager.Utils.API {
 
         internal static Queue<IEvent> EventQueue = new Queue<IEvent>();
         private static void QueueEvent(IEvent ev, bool buffer = true) {
-            if (MainWindow.Started) EventQueue.Enqueue(ev);
+            if (AppCore.Started) EventQueue.Enqueue(ev);
             if (buffer) EventBuffer.Add(ev);
 
             JSEngine.InvokeOnEvent(ev);

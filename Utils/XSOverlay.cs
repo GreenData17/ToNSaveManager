@@ -51,7 +51,7 @@ namespace ToNSaveManager.Utils
             IPAddress broadcastIP = IPAddress.Parse("127.0.0.1"); // localhost
             EndPoint = new IPEndPoint(broadcastIP, DefaultPort);
 
-            Stream? stream = Program.GetEmbededResource("xs_icon.png");
+            Stream? stream = AppCore.GetEmbeddedResource("xs_icon.png");
             if (stream == null) return;
 
             using (MemoryStream memoryStream = new MemoryStream())

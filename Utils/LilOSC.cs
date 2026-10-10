@@ -353,7 +353,7 @@ namespace ToNSaveManager.Utils
         private static Timer? HostTimer;
         private static bool LastHost = false;
         internal static void SendHostChange() {
-            if (LastHost || !MainWindow.Started || !Settings.Get.OSCMasterChange || !Settings.Get.OSCEnabled) return;
+            if (LastHost || !AppCore.Started || !Settings.Get.OSCMasterChange || !Settings.Get.OSCEnabled) return;
 
             if (HostTimer == null) {
                 HostTimer = new Timer();
@@ -382,7 +382,7 @@ namespace ToNSaveManager.Utils
         private static Timer? DamageTimer;
         private static int LastDamage = 0;
         internal static void SetDamage(int damage) {
-            if (!MainWindow.Started || !Settings.Get.OSCDamagedEvent || !Settings.Get.OSCEnabled) return;
+            if (!AppCore.Started || !Settings.Get.OSCDamagedEvent || !Settings.Get.OSCEnabled) return;
 
             if (DamageTimer == null) {
                 DamageTimer = new Timer();
@@ -442,7 +442,7 @@ namespace ToNSaveManager.Utils
         }
 
         internal static void SendData(bool force = false) {
-            if (Settings.Get.OSCEnabled && ((MainWindow.Started && IsDirty) || force)) {
+            if (Settings.Get.OSCEnabled && ((AppCore.Started && IsDirty) || force)) {
                 IsDirty = false;
 
                 if (LastOptedIn != IsOptedIn || force) SendParam(ParamOptedIn, LastOptedIn = IsOptedIn);
@@ -546,7 +546,7 @@ namespace ToNSaveManager.Utils
                 if (LastPlayerCount != PlayerCount || force) SendParam(ParamPlayerCount, LastPlayerCount = PlayerCount);
             }
 
-            if (ChatboxClear || (ToNLogContext.CanSendChatbox && MainWindow.Started && !force && !string.IsNullOrEmpty(ChatboxMessage))) {
+            if (ChatboxClear || (ToNLogContext.CanSendChatbox && AppCore.Started && !force && !string.IsNullOrEmpty(ChatboxMessage))) {
                 ChatboxCountdown -= MainWindow.LogWatcher.Interval;
                 if (ChatboxCountdown < 0) {
                     ChatboxCountdown = ChatboxInterval;
