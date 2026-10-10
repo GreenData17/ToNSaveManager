@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using ToNSaveManager.Localization;
 
 namespace ToNSaveManager
 {
@@ -13,7 +15,29 @@ namespace ToNSaveManager
         internal static readonly string DataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ProgramName);
         // Legacy path is mostly for Windows users, or for linux users that managed to get it to run via proton
         internal static string LegacyDataLocation => Path.Combine(GetVRChatDataLocation(), ProgramName);
-        
+
+        /// <summary>
+        /// Initializes Core. Every frontend calls this first, before using any other Core API.
+        /// </summary>
+        internal static void Initialize(string[] args)
+        {
+            Args.SetArguments(args);
+
+            Directory.CreateDirectory(DataLocation);
+            if (Args.ContainsArg("--console")) Logger.AllowConsole();
+            Logger.Log("Initializing Core.");
+
+            Directory.SetCurrentDirectory(ProgramDirectory);
+            Logger.Log("Program Directory: " + ProgramDirectory);
+            
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            LANG.Initialize();
+        }
+
         #region Find VRChat Location
         
         private static string? m_VRChatDataLocation;

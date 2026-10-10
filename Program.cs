@@ -43,29 +43,15 @@ namespace ToNSaveManager
         [STAThread]
         static void Main(string[] args)
         {
-            Args.SetArguments(args);
-            
             if (CheckMutex()) {
                 // Don't run program if it's already running, instead we focus the already existing window
                 NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST, NativeMethods.WM_FOCUSINST, IntPtr.Zero, IntPtr.Zero);
                 return;
             }
 
-            if (!Directory.Exists(AppCore.DataLocation)) Directory.CreateDirectory(AppCore.DataLocation);
-
             try {
-                if (Args.ContainsArg("--console")) Logger.AllowConsole();
-                Logger.Log("Initializing logging.");
+                AppCore.Initialize(args);
 
-                Directory.SetCurrentDirectory(ProgramDirectory);
-                Logger.Log("Program Directory: " + ProgramDirectory);
-
-                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-                LANG.Initialize();
                 LANG.LanguageAdded += () => SettingsWindow.Instance?.FillLanguageBox();
                 LANG.LanguageChanged += LocalizeAllWindows;
                 Updater.CheckPostUpdate(args);
