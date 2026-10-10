@@ -24,16 +24,26 @@ namespace ToNSaveManager
         /// </summary>
         internal static bool Started;
 
+        private static SaveData? m_SaveData;
         /// <summary>
-        /// Raised when Core failed to write one of its files (settings, saves, stats).
-        /// The frontend decides how to tell the user.
+        /// The save data, loaded on first access so the frontend can subscribe to
+        /// <see cref="SaveData.ImportFailed"/> and <see cref="WriteFailed"/> first.
         /// </summary>
-        internal static event Action<string, Exception>? WriteFailed;
+        internal static SaveData SaveData => m_SaveData ??= SaveData.Import();
 
-        internal static void ReportWriteFailed(string path, Exception e)
+        /// <summary>
+        /// Raised when Core failed to write one of its files (settings, saves, stats),
+        /// with the path, a localized message for the user and the error.
+        /// The frontend decides how to show it.
+        /// </summary>
+        internal static event Action<string, string, Exception>? WriteFailed;
+
+        internal static void ReportWriteFailed(string path, Exception e, string? message = null)
         {
+            message ??= LANG.S("MESSAGE.WRITE_SETTINGS_ERROR") ?? "An error occurred while trying to write a file.\n\nMake sure that the program contains permissions to write files in the current folder it's located at.";
+
             Logger.Error($"Failed to write '{path}': {e}");
-            WriteFailed?.Invoke(path, e);
+            WriteFailed?.Invoke(path, message, e);
         }
 
         /// <summary>

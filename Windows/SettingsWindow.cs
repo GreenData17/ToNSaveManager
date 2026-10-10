@@ -610,7 +610,7 @@ namespace ToNSaveManager.Windows
         }
 
         private void btnOpenData_Click(object sender, EventArgs e) {
-            SaveData.OpenDataLocation();
+            MainWindow.OpenExternalLink(Path.GetDirectoryName(SaveData.Destination) ?? string.Empty);
         }
 
         private void checkSendChatbox_CheckedChanged(object? sender, EventArgs e) {
@@ -720,11 +720,31 @@ namespace ToNSaveManager.Windows
         }
 
         private void ctxItemPickFolder_Click(object sender, EventArgs e) {
-            SaveData.SetDataLocation(false);
+            ChangeDataLocation(false);
         }
 
         private void ctxItemResetToDefault_Click(object sender, EventArgs e) {
-            SaveData.SetDataLocation(true);
+            ChangeDataLocation(true);
+        }
+
+        private static void ChangeDataLocation(bool reset) {
+            string? folder = null;
+            if (!reset) {
+                using FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                folderBrowserDialog.SelectedPath = Path.GetDirectoryName(SaveData.Destination) ?? string.Empty;
+                if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
+                folder = folderBrowserDialog.SelectedPath;
+            }
+
+            try {
+                if (!SaveData.SetDataLocation(folder)) return;
+            } catch (Exception e) {
+                string selectedFolder = folder ?? AppCore.DataLocation;
+                MessageBox.Show(LANG.S("MESSAGE.COPY_FILES_ERROR", selectedFolder) ?? $"An error ocurred while trying to copy your files to the selected location.\n\nMake sure that the program contains permissions to write files to the destination.\nPath: {selectedFolder}" + "\n\n" + e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (reset) MessageBox.Show(LANG.S("MESSAGE.SAVE_LOCATION_RESET") ?? "Save data location has been reset to default.", LANG.S("MESSAGE.SAVE_LOCATION_RESET.TITLE") ?? "Reset Custom Data Location");
         }
 
         private void CheckColorObjectives_CheckedChanged(object? sender, EventArgs e) {

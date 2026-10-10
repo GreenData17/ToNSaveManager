@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Linq;
-using System.Xml.Linq;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Models.Stats;
 
@@ -156,71 +153,66 @@ namespace ToNSaveManager.Models
             return recent;
         }
 
-        public static void OpenDataLocation()
+        /// <summary>
+        /// Moves the save data to <paramref name="folder"/>, or back to the default location when it is null.
+        /// Throws if copying the files fails.
+        /// </summary>
+        /// <returns>False if nothing had to be done (reset while already using the default location).</returns>
+        internal static bool SetDataLocation(string? folder)
         {
-            MainWindow.OpenExternalLink(Path.GetDirectoryName(Destination) ?? string.Empty);
-        }
-        public static void SetDataLocation(bool reset)
-        {
+            bool reset = folder == null;
             string selectedFolder;
             string selDir;
             if (reset)
             {
-                if (string.IsNullOrEmpty(Settings.Get.DataLocation)) return;
+                if (string.IsNullOrEmpty(Settings.Get.DataLocation)) return false;
                 selectedFolder = DefaultLocation;
                 selDir         = AppCore.DataLocation;
             }
             else
             {
-                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-                folderBrowserDialog.SelectedPath = Path.GetDirectoryName(Destination) ?? string.Empty;
-                DialogResult result = folderBrowserDialog.ShowDialog();
-
-                if (result != DialogResult.OK) return;
-
-                selDir = selectedFolder = folderBrowserDialog.SelectedPath;
-                selectedFolder = Path.Combine(selectedFolder, FileName);
+                selDir = folder!;
+                selectedFolder = Path.Combine(selDir, FileName);
             }
 
-            try {
-                // Make a backup of this save file, just in case
-                if (File.Exists(Destination)) {
-                    File.Copy(Destination, Path.Combine(Path.GetDirectoryName(Settings.Destination) ?? string.Empty, FileName + ".backup_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
-                    File.Move(Destination, selectedFolder, true);
-                }
-
-                string currentDatabase = History.Destination;
-                string currentDatabaseCustom = History.DestinationCustom;
-                string databaseFolder = Path.Combine(selDir, "Database");
-                string databaseFolderCustom = Path.Combine(selDir, "Database", "Custom");
-
-                if (!Directory.Exists(databaseFolderCustom))
-                    Directory.CreateDirectory(databaseFolderCustom);
-
-                string[] files = Directory.GetFiles(currentDatabase);
-                foreach (string file in files) {
-                    string filename = Path.GetFileName(file);
-                    File.Copy(file, Path.Combine(databaseFolder, filename), true);
-                }
-                files = Directory.GetFiles(currentDatabaseCustom);
-                foreach (string file in files) {
-                    string filename = Path.GetFileName(file);
-                    File.Copy(file, Path.Combine(databaseFolderCustom, filename), true);
-                }
-
-                Directory.Move(currentDatabase, currentDatabase + ".backup_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            // Make a backup of this save file, just in case
+            if (File.Exists(Destination)) {
+                File.Copy(Destination, Path.Combine(Path.GetDirectoryName(Settings.Destination) ?? string.Empty, FileName + ".backup_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+                File.Move(Destination, selectedFolder, true);
             }
-            catch (Exception e) {
-                MessageBox.Show(LANG.S("MESSAGE.COPY_FILES_ERROR", selectedFolder) ?? $"An error ocurred while trying to copy your files to the selected location.\n\nMake sure that the program contains permissions to write files to the destination.\nPath: {selectedFolder}" + "\n\n" + e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+
+            string currentDatabase = History.Destination;
+            string currentDatabaseCustom = History.DestinationCustom;
+            string databaseFolder = Path.Combine(selDir, "Database");
+            string databaseFolderCustom = Path.Combine(selDir, "Database", "Custom");
+
+            if (!Directory.Exists(databaseFolderCustom))
+                Directory.CreateDirectory(databaseFolderCustom);
+
+            string[] files = Directory.GetFiles(currentDatabase);
+            foreach (string file in files) {
+                string filename = Path.GetFileName(file);
+                File.Copy(file, Path.Combine(databaseFolder, filename), true);
             }
+            files = Directory.GetFiles(currentDatabaseCustom);
+            foreach (string file in files) {
+                string filename = Path.GetFileName(file);
+                File.Copy(file, Path.Combine(databaseFolderCustom, filename), true);
+            }
+
+            Directory.Move(currentDatabase, currentDatabase + ".backup_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             Destination = selectedFolder;
             Settings.Get.DataLocation = reset ? null : Destination;
             Settings.Export();
-
-            if (reset) MessageBox.Show( LANG.S("MESSAGE.SAVE_LOCATION_RESET") ?? "Save data location has been reset to default.", LANG.S("MESSAGE.SAVE_LOCATION_RESET.TITLE") ?? "Reset Custom Data Location");
+            return true;
         }
+
+        /// <summary>
+        /// Raised when the save file could not be read, with its path, the error and whether a backup was created.
+        /// Without a backup, the frontend should exit so the file isn't overwritten later.
+        /// </summary>
+        internal static event Action<string, Exception, bool>? ImportFailed;
 
         public static SaveData Import()
         {
@@ -267,13 +259,12 @@ namespace ToNSaveManager.Models
             }
             catch (Exception ex)
             {
-                MessageBox.Show((LANG.S("MESSAGE.IMPORT_SAVE_ERROR") ?? "Error trying to import your save.") + "\n\n" + ex, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Error("Error trying to import save data: " + ex);
+                bool backupCreated = AppCore.CreateFileBackup(filePath);
+                ImportFailed?.Invoke(filePath, ex, backupCreated);
 
-                if (!AppCore.CreateFileBackup(filePath))
-                {
-                    Application.Exit();
-                    return new SaveData();
-                }
+                // Without a backup, don't touch the unreadable file
+                if (!backupCreated) return new SaveData();
             }
 
             if (data == null)
@@ -390,7 +381,8 @@ namespace ToNSaveManager.Models
             }
             catch (Exception e)
             {
-                MessageBox.Show((LANG.S("MESSAGE.WRITE_SAVE_ERROR", Destination) ?? $"An error ocurred while trying to write your saves to a file.\n\nMake sure that the program contains permissions to write files to the destination.\nPath: {Destination}") + "\n\n" + e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppCore.ReportWriteFailed(Destination, e,
+                    LANG.S("MESSAGE.WRITE_SAVE_ERROR", Destination) ?? $"An error ocurred while trying to write your saves to a file.\n\nMake sure that the program contains permissions to write files to the destination.\nPath: {Destination}");
             }
         }
 

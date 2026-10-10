@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Drawing;
 
 namespace ToNSaveManager.Models
 {
@@ -20,10 +21,10 @@ namespace ToNSaveManager.Models
         [JsonIgnore] public string? Tooltip { get; set; }
 
         [JsonIgnore] public bool IsCompleted {
-            get => !IsSeparator && MainWindow.SaveData.GetCompleted(Name);
+            get => !IsSeparator && AppCore.SaveData.GetCompleted(Name);
             set
             {
-                if (!IsSeparator) MainWindow.SaveData.SetCompleted(Name, value);
+                if (!IsSeparator) AppCore.SaveData.SetCompleted(Name, value);
             }
         }
 

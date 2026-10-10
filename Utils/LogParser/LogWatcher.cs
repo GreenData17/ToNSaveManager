@@ -37,8 +37,8 @@
         #region From Settings
         bool SkipParsedLogs => Settings.Get.SkipParsedLogs;
 
-        long GetParsedPos(string name) => MainWindow.SaveData.GetParsedPos(name);
-        void SetParsedPos(string name, long pos, bool save) => MainWindow.SaveData.SetParsedPos(name, pos, save);
+        long GetParsedPos(string name) => AppCore.SaveData.GetParsedPos(name);
+        void SetParsedPos(string name, long pos, bool save) => AppCore.SaveData.SetParsedPos(name, pos, save);
 
         string HomeWorldID = string.Empty;
         #endregion
@@ -136,7 +136,7 @@
             // Remove logs keys that doesn't exist anymore
             if (firstRun)
             {
-                string[] parsedLogKeyArray = MainWindow.SaveData.ParsedLog.Keys.ToArray();
+                string[] parsedLogKeyArray = AppCore.SaveData.ParsedLog.Keys.ToArray();
                 foreach (string key in parsedLogKeyArray)
                 {
                     if (!m_LogContextMap.Values.Any(v => v.DateKey == key))

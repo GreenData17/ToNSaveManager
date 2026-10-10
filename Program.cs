@@ -52,9 +52,12 @@ namespace ToNSaveManager
 
             try {
                 AppCore.Initialize(args);
-                AppCore.WriteFailed += (path, e) => MessageBox.Show(
-                    (LANG.S("MESSAGE.WRITE_SETTINGS_ERROR") ?? "An error occurred while trying to write a file.\n\nMake sure that the program contains permissions to write files in the current folder it's located at.") + "\n\n" + e,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppCore.WriteFailed += (path, message, e) =>
+                    MessageBox.Show(message + "\n\n" + e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SaveData.ImportFailed += (path, e, backupCreated) => {
+                    MessageBox.Show((LANG.S("MESSAGE.IMPORT_SAVE_ERROR") ?? "Error trying to import your save.") + "\n\n" + e, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!backupCreated) Application.Exit();
+                };
 
                 // TODO: move into Core together with WebSocketAPI
                 ToNStats.StatChanged += WebSocketAPI.EventStats.Send;
@@ -95,7 +98,7 @@ namespace ToNSaveManager
             DefaultFont?.Dispose();
             ReleaseMutex();
             Logger.Log("Saving before app exit...");
-            MainWindow.SaveData.Export();
+            AppCore.SaveData.Export();
             StatsWindow.WriteChanges();
             OSCLib.Dispose();
             Logger.Log("Done.");
