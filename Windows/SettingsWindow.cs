@@ -738,7 +738,6 @@ namespace ToNSaveManager.Windows
             if (LANG.SelectedKey != langKey.Key) {
                 Logger.Log("Changing language to: " + langKey);
                 LANG.Select(langKey.Key);
-                Program.LocalizeAllWindows();
                 Settings.Get.SelectedLanguage = langKey.Key;
                 Settings.Export();
             }

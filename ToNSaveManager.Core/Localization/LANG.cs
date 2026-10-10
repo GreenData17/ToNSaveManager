@@ -31,7 +31,10 @@ namespace ToNSaveManager.Localization {
         static readonly Regex ReplacePattern = new Regex(@"\$\$(?<key>.*?)\$\$", RegexOptions.Compiled);
         const string PatternSearch = "$$";
         
+        /// <summary>Raised after a language file was added through <see cref="AddFromFile"/>.</summary>
         internal static event Action? LanguageAdded;
+        /// <summary>Raised after <see cref="Select"/> switched the active language.</summary>
+        internal static event Action? LanguageChanged;
 
         /// <summary>
         /// Looks up <paramref name="key"/> in the default language (en-US), used as a fallback when the selected language lacks the key.
@@ -94,6 +97,8 @@ namespace ToNSaveManager.Localization {
             SelectedLang = LanguageData.ContainsKey(key) ? LanguageData[key] : LanguageData[key = SelectedDefaultKey];
             SelectedKey = key;
             IsRightToLeft = SelectedLang.ContainsKey("RIGHT_TO_LEFT") && SelectedLang["RIGHT_TO_LEFT"] == "YES";
+
+            LanguageChanged?.Invoke();
         }
 
         internal static string FindLanguageKey() {
