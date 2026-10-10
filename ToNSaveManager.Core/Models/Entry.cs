@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Text;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Models.Index;
@@ -197,20 +196,6 @@ namespace ToNSaveManager.Models
                 sb.Append(Players);
             }
             return sb.ToString();
-        }
-
-        public void CopyToClipboard()
-        {
-            Logger.Log("COPYING TO CLIPBOARD: " + this);
-            // Windows 11 please... :[
-            // Clipboard.Clear();
-            // Clipboard.SetText(Content);
-            try {
-                Clipboard.SetDataObject(Content, true, 4, 200);
-            } catch (Exception e) {
-                Logger.Error("Error trying to set clipboard object: " + e);
-            }
-            // Clipboard.SetText(Content);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ToNSaveManager.Localization;
+using ToNSaveManager.Models;
 
 namespace ToNSaveManager
 {
@@ -64,6 +65,8 @@ namespace ToNSaveManager
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             LANG.Initialize();
+            LANG.LanguageChanged += Entry.LocalizeContent;
+            Entry.LocalizeContent();
         }
 
         #region Find VRChat Location
