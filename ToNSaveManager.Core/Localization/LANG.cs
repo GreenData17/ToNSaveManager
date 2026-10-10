@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using ToNSaveManager.Windows;
 
 namespace ToNSaveManager.Localization {
     internal static class LANG {
@@ -32,7 +30,13 @@ namespace ToNSaveManager.Localization {
         internal static List<LangKey> AvailableLang { get; private set; } = new List<LangKey>();
         static readonly Regex ReplacePattern = new Regex(@"\$\$(?<key>.*?)\$\$", RegexOptions.Compiled);
         const string PatternSearch = "$$";
+        
+        internal static event Action? LanguageAdded;
 
+        /// <summary>
+        /// Looks up <paramref name="key"/> in the default language (en-US), used as a fallback when the selected language lacks the key.
+        /// </summary>
+        /// <returns>The formatted string, or null if the key does not exist.</returns>
         private static string? D(string key, params string[] args) {
 #if DEBUG
             // if (!key.EndsWith(".TT")) Logger.Debug($"Missing key '{key}' in language pack '{SelectedKey}'");
@@ -48,6 +52,11 @@ namespace ToNSaveManager.Localization {
             return null;
         }
 
+        /// <summary>
+        /// Gets the localized string for <paramref name="key"/> in the selected language, falling back to the default language.
+        /// <paramref name="args"/> are applied with <see cref="string.Format(string, object?[])"/>, and $$OTHER.KEY$$ references are resolved.
+        /// </summary>
+        /// <returns>The localized string, or null if the key does not exist in any loaded language.</returns>
         public static string? S(string key, params string[] args) {
             string? result;
             if (SelectedLang.ContainsKey(key)) {
@@ -70,28 +79,15 @@ namespace ToNSaveManager.Localization {
             return result;
         }
 
+        /// <summary>
+        /// Gets the localized text and its tooltip (stored under <paramref name="key"/> + ".TT").
+        /// </summary>
+        /// <returns>A tuple of (text, tooltip); either can be null.</returns>
         public static (string?, string?) T(string key, params string[] args) {
             return (S(key, args), S(key + ".TT", args));
         }
 
-        public static void C(Control control, string key, ToolTip? toolTip = null, string? value = null) {
-            (string? tx, string? tt) = T(key);
-            if (!string.IsNullOrEmpty(tx)) control.Text = tx;
-            else if (!string.IsNullOrEmpty(value)) control.Text = value;
-            if (!string.IsNullOrEmpty(tt)) {
-                if (toolTip == null) TooltipUtil.Set(control, tt);
-                else toolTip.SetToolTip(control, tt);
-            }
-
-            control.RightToLeft = IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
-        }
-        public static void C(ToolStripItem item, string key) {
-            (string? text, string? tooltip) = T(key);
-            if (!string.IsNullOrEmpty(text)) item.Text = text;
-            if (!string.IsNullOrEmpty(tooltip)) item.ToolTipText = tooltip;
-
-            item.RightToLeft = IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
-        }
+        
 
         internal static void Select(string key) {
             Logger.Info("Selecting language key: " + key);
@@ -134,14 +130,6 @@ namespace ToNSaveManager.Localization {
             return foundKey;
         }
 
-        internal static void ReloadAll() {
-            MainWindow.Instance?.LocalizeContent();
-            EditWindow.Instance?.LocalizeContent();
-            ObjectivesWindow.Instance?.LocalizeContent();
-            SettingsWindow.Instance?.LocalizeContent();
-            StatsWindow.Instance?.LocalizeContent();
-        }
-
         internal static void AddFromFile(string filePath) {
             string json = File.ReadAllText(filePath);
             var obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -161,8 +149,7 @@ namespace ToNSaveManager.Localization {
                 Logger.Debug("Added custom language with key: " + key);
                 Select(key);
 
-                SettingsWindow.Instance?.FillLanguageBox();
-                ReloadAll();
+                LanguageAdded?.Invoke();
             }
         }
 

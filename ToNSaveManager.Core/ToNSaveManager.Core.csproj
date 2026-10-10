@@ -16,4 +16,9 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="..\Localization\Language\*.json"
+                          LogicalName="ToNSaveManager.Localization.Language.%(Filename)%(Extension)" />
+    </ItemGroup>
+
 </Project>

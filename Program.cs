@@ -65,6 +65,7 @@ namespace ToNSaveManager
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
                 LANG.Initialize();
+                LANGUI.Initialize();
                 Updater.CheckPostUpdate(args);
 
                 Logger.Log("Initializing application rendering.");

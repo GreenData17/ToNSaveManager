@@ -146,7 +146,7 @@ namespace ToNSaveManager
         }
 
         internal void LocalizeContent() {
-            LANG.C(this, "STATS.TITLE");
+            LANGUI.C(this, "STATS.TITLE");
 
             UpdateTable();
 
@@ -169,8 +169,8 @@ namespace ToNSaveManager
                 DisplayNames[i, 1] = tt;
             }
 
-            LANG.C(ctxTypeInValue, "STATS.CTX_TYPE_IN_VALUE");
-            LANG.C(ctxCopyStatName, "STATS.CTX_COPY_TEMPLATE_KEY");
+            LANGUI.C(ctxTypeInValue, "STATS.CTX_TYPE_IN_VALUE");
+            LANGUI.C(ctxCopyStatName, "STATS.CTX_COPY_TEMPLATE_KEY");
 
             RightToLeft = LANG.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
         }

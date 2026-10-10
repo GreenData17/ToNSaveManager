@@ -134,21 +134,21 @@ namespace ToNSaveManager {
         }
 
         internal void LocalizeContent() {
-            LANG.C(btnSettings, "MAIN.SETTINGS");
-            LANG.C(btnObjectives, "MAIN.OBJECTIVES");
-            LANG.C(linkWiki, "MAIN.WIKI");
-            LANG.C(linkSupport, "MAIN.SUPPORT");
-            LANG.C(btnStats, "MAIN.STATS");
+            LANGUI.C(btnSettings, "MAIN.SETTINGS");
+            LANGUI.C(btnObjectives, "MAIN.OBJECTIVES");
+            LANGUI.C(linkWiki, "MAIN.WIKI");
+            LANGUI.C(linkSupport, "MAIN.SUPPORT");
+            LANGUI.C(btnStats, "MAIN.STATS");
 
-            LANG.C(importToolStripMenuItem, "MAIN.CTX_IMPORT"); // .TITLE
-            LANG.C(renameToolStripMenuItem, "MAIN.CTX_RENAME"); // .TITLE
-            LANG.C(deleteToolStripMenuItem, "MAIN.CTX_DELETE"); // .TITLE
+            LANGUI.C(importToolStripMenuItem, "MAIN.CTX_IMPORT"); // .TITLE
+            LANGUI.C(renameToolStripMenuItem, "MAIN.CTX_RENAME"); // .TITLE
+            LANGUI.C(deleteToolStripMenuItem, "MAIN.CTX_DELETE"); // .TITLE
 
-            LANG.C(ctxMenuEntriesCopyTo, "MAIN.CTX_ADD_TO");
-            LANG.C(ctxMenuEntriesNew, "MAIN.CTX_ADD_TO.NEW");
-            LANG.C(ctxMenuEntriesNote, "MAIN.CTX_EDIT_NOTE");
-            LANG.C(ctxMenuEntriesBackup, "MAIN.CTX_BACKUP");
-            LANG.C(ctxMenuEntriesDelete, "MAIN.CTX_DELETE");
+            LANGUI.C(ctxMenuEntriesCopyTo, "MAIN.CTX_ADD_TO");
+            LANGUI.C(ctxMenuEntriesNew, "MAIN.CTX_ADD_TO.NEW");
+            LANGUI.C(ctxMenuEntriesNote, "MAIN.CTX_EDIT_NOTE");
+            LANGUI.C(ctxMenuEntriesBackup, "MAIN.CTX_BACKUP");
+            LANGUI.C(ctxMenuEntriesDelete, "MAIN.CTX_DELETE");
 
             Entry.LocalizeContent();
             DSWebHook.LocalizeContent();
