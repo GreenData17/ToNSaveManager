@@ -22,7 +22,6 @@ namespace ToNSaveManager
         internal static void ClearLobby() {
             ToNStats.ClearLobby();
             ToNStats.ClearRound();
-            RefreshTable();
             UpdateChatboxContent();
         }
 
@@ -36,87 +35,6 @@ namespace ToNSaveManager
             }
 
             ToNStats.Export(false);
-        }
-
-        internal static void AddRound(bool survived) {
-            ToNStats.AddRound(survived, AppCore.Started);
-            RefreshTable();
-        }
-        internal static void AddStun(bool isLocal) {
-            ToNStats.AddStun(isLocal, AppCore.Started);
-            RefreshTable();
-        }
-        internal static void AddDamage(int damage) {
-            ToNStats.AddDamage(damage, AppCore.Started);
-            RefreshTable();
-        }
-
-        internal static void SetDisplayName(string displayName, bool isDiscord) {
-            ToNStats.SetDisplayName(displayName, isDiscord);
-            RefreshTable();
-        }
-
-        internal static void SetInstanceURL(string instanceURL) {
-            ToNStats.SetInstanceURL(instanceURL);
-            RefreshTable();
-        }
-
-        internal static void SetTerrorMatrix(TerrorMatrix terrorMatrix) {
-            ToNStats.AddTerrors(terrorMatrix);
-            RefreshTable();
-        }
-        internal static void SetLocation(ToNIndex.Map map, bool killersSet) {
-            ToNStats.AddLocation(map, killersSet);
-            RefreshTable();
-        }
-        internal static void SetItem(ToNIndex.Item item) {
-            ToNStats.AddItem(item);
-            RefreshTable();
-        }
-        internal static void SetIsKiller(bool isKiller) {
-            ToNStats.AddIsKiller(isKiller);
-            RefreshTable();
-        }
-        internal static void SetPageCount(int pages) {
-            ToNStats.AddPageCount(pages);
-            RefreshTable();
-        }
-        internal static void SetOptedIn(bool optedIn) {
-            ToNStats.AddOptedIn(optedIn);
-            RefreshTable();
-        }
-        internal static void SetPlayerCount(int playerCount) {
-            ToNStats.AddPlayerCount(playerCount);
-            RefreshTable();
-        }
-        internal static void SetIsAlive(bool isAlive) {
-            ToNStats.AddIsAlive(isAlive);
-            RefreshTable();
-
-            if (!isAlive)
-                SetActiveInRound(false);
-        }
-        internal static void SetIsReborn(bool reborn) {
-            ToNStats.AddIsReborn(reborn);
-            RefreshTable();
-        }
-        internal static void SetIsStarted(bool started) {
-            ToNStats.AddIsStarted(started);
-            RefreshTable();
-
-            SetActiveInRound(started);
-        }
-
-        static bool IsRoundActive;
-        static void SetActiveInRound(bool active) {
-            if (IsRoundActive != active) {
-                IsRoundActive = active;
-                if (IsRoundActive) {
-                    LilOSC.SetChatboxMessage(string.Empty);
-                    ToNStats.ClearRound();
-                    RefreshTable();
-                } else UpdateChatboxContent();
-            }
         }
 
         static StatPropertyContainer[] TableProperties => ToNStats.PropertyValues;
@@ -221,7 +139,7 @@ namespace ToNSaveManager
         }
 
         internal static void UpdateChatboxContent() {
-            if (IsRoundActive || !AppCore.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
+            if (ToNGameState.IsActiveInRound || !AppCore.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
             string template = TemplateManager.ReplaceTemplate(Settings.Get.OSCMessageInfoTemplate.Template).Replace("\\n", "\n");
             LilOSC.SetChatboxMessage(template);
         }

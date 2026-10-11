@@ -9,6 +9,7 @@ using OnLineArgs = ToNSaveManager.Utils.LogParser.LogWatcher<ToNSaveManager.Util
 using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Models.Index;
+using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils.LogParser;
 using ToNSaveManager.Utils.OpenRGB;
 using ToNSaveManager.Utils.API;
@@ -751,7 +752,7 @@ namespace ToNSaveManager {
             if (!context.Terrors.IsEmpty) {
                 // Track round participation results / Supports live build maybe
                 if (line.StartsWith(ROUND_OVER_KEYWORD)) {
-                    if (context.IsRecent) StatsWindow.AddRound(context.IsAlive);
+                    if (context.IsRecent) ToNStats.AddRound(context.IsAlive, AppCore.Started);
 
                     if (context.IsOptedIn) {
                         context.SetRoundResult(context.IsAlive ? (context.IsReborn ? ToNRoundResult.B : ToNRoundResult.W) : ToNRoundResult.L);
@@ -903,12 +904,12 @@ namespace ToNSaveManager {
             }
 
             if (line.Contains(STAT_STUN_LANDED)) {
-                StatsWindow.AddStun(true);
+                ToNStats.AddStun(true, AppCore.Started);
                 return true;
             }
 
             if (line.Contains(STAT_STUN_TARGET)) {
-                StatsWindow.AddStun(false);
+                ToNStats.AddStun(false, AppCore.Started);
                 return true;
             }
 

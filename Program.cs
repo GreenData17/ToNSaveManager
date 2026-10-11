@@ -8,7 +8,6 @@ using ToNSaveManager.Localization;
 using ToNSaveManager.Models;
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils;
-using ToNSaveManager.Utils.API;
 using ToNSaveManager.Windows;
 using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Utils.LogParser;
@@ -59,9 +58,9 @@ namespace ToNSaveManager
                     if (!backupCreated) Application.Exit();
                 };
 
-                // TODO: move into Core together with WebSocketAPI
-                ToNStats.StatChanged += WebSocketAPI.EventStats.Send;
+                IntegrationHooks.Register();
 
+                ToNStats.StatChanged += (key, value) => StatsWindow.RefreshTable();
                 LANG.LanguageAdded += () => SettingsWindow.Instance?.FillLanguageBox();
                 LANG.LanguageChanged += LocalizeAllWindows;
                 Updater.CheckPostUpdate(args);
