@@ -109,6 +109,7 @@ namespace ToNSaveManager.Utils.LogParser
             if (IsRoundActive == roundActive) return;
 
             IsRoundActive = roundActive;
+            if (roundActive) ClearSummary();
             SetIsAlive(IsOptedIn || !roundActive);
             SetIsReborn(false);
 
@@ -136,7 +137,6 @@ namespace ToNSaveManager.Utils.LogParser
 
             if (!IsOptedIn) {
                 if (IsRoundActive) SetIsAlive(false);
-                ClearSummary();
             } else SetIsAlive(!IsRoundActive);
         }
         public void SetTerrorMatrix(TerrorMatrix matrix) {
