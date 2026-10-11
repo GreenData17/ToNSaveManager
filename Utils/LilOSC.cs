@@ -547,7 +547,7 @@ namespace ToNSaveManager.Utils
             }
 
             if (ChatboxClear || (ToNLogContext.CanSendChatbox && AppCore.Started && !force && !string.IsNullOrEmpty(ChatboxMessage))) {
-                ChatboxCountdown -= MainWindow.LogWatcher.Interval;
+                ChatboxCountdown -= ToNLogHandler.LogWatcher.Interval;
                 if (ChatboxCountdown < 0) {
                     ChatboxCountdown = ChatboxInterval;
                     SendChatbox(ChatboxMessage);

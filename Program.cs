@@ -63,7 +63,6 @@ namespace ToNSaveManager
                         LANG.S("MESSAGE.LARGE_LOG_WARNING.TITLE") ?? "Parsing large log file!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     return result == DialogResult.Yes || result != DialogResult.No;
                 };
-                ToNLogContext.HomeWorldCopyRequested += MainWindow.CopyRecentData;
 
                 IntegrationHooks.Register();
 
@@ -105,7 +104,7 @@ namespace ToNSaveManager
             ReleaseMutex();
             Logger.Log("Saving before app exit...");
             AppCore.SaveData.Export();
-            StatsWindow.WriteChanges();
+            ToNLogHandler.WriteChanges();
             OSCLib.Dispose();
             Logger.Log("Done.");
         }

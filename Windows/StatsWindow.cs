@@ -19,24 +19,6 @@ namespace ToNSaveManager
         internal static StatsWindow? Instance { get; private set; }
         internal static void RefreshTable() => Instance?.UpdateTable();
 
-        internal static void ClearLobby() {
-            ToNStats.ClearLobby();
-            ToNStats.ClearRound();
-            UpdateChatboxContent();
-        }
-
-        internal static void WriteChanges() {
-            if (Settings.Get.OSCMessageInfoTemplate.IsModified) {
-                UpdateChatboxContent();
-            }
-
-            if (Settings.Get.RoundInfoToFile) {
-                foreach (var template in Settings.Get.RoundInfoTemplates) template.WriteToFile();
-            }
-
-            ToNStats.Export(false);
-        }
-
         static StatPropertyContainer[] TableProperties => ToNStats.PropertyValues;
         static string[,]? DisplayNames;
 

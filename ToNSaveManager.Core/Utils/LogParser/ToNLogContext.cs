@@ -16,8 +16,6 @@ namespace ToNSaveManager.Utils.LogParser
         internal static event Action<LogPlayer, bool>? PlayerJoined;
         /// <summary>The context was reset, after leaving a room or when reading starts.</summary>
         internal static event Action? Awake;
-        /// <summary>Joined the home world and the settings ask to copy the most recent save code.</summary>
-        internal static event Action? HomeWorldCopyRequested;
 
         /// <summary>
         /// Asked before parsing a very large log file. Arguments: file name, readable file size.
@@ -57,7 +55,7 @@ namespace ToNSaveManager.Utils.LogParser
                 InstanceJoined?.Invoke(instanceID, isHomeWorld);
 
                 if (isHomeWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && AppCore.Started)
-                    HomeWorldCopyRequested?.Invoke();
+                    ToNLogHandler.CopyRecentData();
             }
         }
 

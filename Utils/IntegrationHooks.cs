@@ -1,12 +1,15 @@
+using System.Text.RegularExpressions;
+using ToNSaveManager.Models;
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils.API;
 using ToNSaveManager.Utils.Discord;
+using ToNSaveManager.Utils.JSPlugins;
 using ToNSaveManager.Utils.LogParser;
 using ToNSaveManager.Utils.OpenRGB;
 
 namespace ToNSaveManager.Utils {
     /// <summary>
-    /// Forwards Core events to the integrations (WebSocket, OSC, Discord, OpenRGB).
+    /// Forwards Core events to the integrations (WebSocket, OSC, Discord, OpenRGB) and the JS plugins.
     /// TODO: move into Core together with the integrations.
     /// </summary>
     internal static class IntegrationHooks {
@@ -28,7 +31,81 @@ namespace ToNSaveManager.Utils {
             };
             ToNLogContext.PlayerJoined += WebSocketAPI.EventPlayerJoin.Send;
             ToNLogContext.Awake += () => LilOSC.SetChatboxMessage(string.Empty);
+
+            ToNLogHandler.LineRead += OnLineRead;
+            ToNLogHandler.Tick += OnTick;
+            ToNLogHandler.SaveStored += OnSaveStored;
+            ToNLogHandler.PlayerDied += () => LilOSC.SetDamage(byte.MaxValue);
+            ToNLogHandler.LobbyCleared += StatsWindow.UpdateChatboxContent;
         }
+
+        #region Log Handling
+        const string ROUND_DEATH_MSG_KEYWORD = "[DEATH][";
+        const string EVENT_MASTER_CHANGE = "[Behaviour] OnMasterClientSwitched";
+
+        static readonly Regex PATTERN_ITEM_ACTIVATED = new Regex(@"\[[\w ]+\] (Activated!|Deactivated!)", RegexOptions.Compiled);
+
+        private static void OnLineRead(string line, ToNLogContext context) {
+            JSEngine.InvokeOnLine(line);
+
+            if (context.IsRecent && AppCore.Started) HandleIntegrationLine(line, context);
+
+            if (Settings.Get.WebSocketEnabled && Settings.Get.WebTrackerCompatibility && context.IsRecent) {
+                WebSocketAPI.OnReadLine(line);
+            }
+        }
+
+        private static bool HandleIntegrationLine(string line, ToNLogContext context) {
+            if (Settings.Get.WebSocketEnabled && line.StartsWith(ROUND_DEATH_MSG_KEYWORD)) {
+                int index = line.IndexOf(']', ROUND_DEATH_MSG_KEYWORD.Length);
+                int length = index - ROUND_DEATH_MSG_KEYWORD.Length;
+                if (length < 1) return true;
+
+                string name = line.Substring(ROUND_DEATH_MSG_KEYWORD.Length, length);
+                string cont = line.Substring(index + 2).Trim();
+                WebSocketAPI.EventDeath.Send(name, cont, context.DisplayName == name);
+
+                if (Settings.Get.OSCDeathEvent) {
+                    int deathId = Settings.Get.GetDeathID(name);
+                    if (deathId > 0) LilOSC.SetDeathID(deathId);
+                    else LilOSC.SetDeathID();
+                }
+                return true;
+            }
+
+            if (Settings.Get.OSCEnabled) {
+                if (Settings.Get.OSCMasterChange && line.StartsWith(EVENT_MASTER_CHANGE)) {
+                    LilOSC.SendHostChange();
+                    WebSocketAPI.SendValue<object?>("MASTER_CHANGE", null, false);
+                    return true;
+                }
+
+                if (PATTERN_ITEM_ACTIVATED.IsMatch(line)) {
+                    LilOSC.SetItemStatus(!line.Contains("Deactivated!"));
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void OnTick() {
+            DSRichPresence.Send();
+
+            if (Settings.Get.OSCMessageInfoTemplate.IsModified)
+                StatsWindow.UpdateChatboxContent();
+
+            LilOSC.SendData();
+            WebSocketAPI.SendEventUpdate();
+            JSEngine.InvokeOnTick();
+        }
+
+        private static void OnSaveStored(Entry entry) {
+            DSWebHook.Send(entry);
+
+            if (Settings.Get.WebSocketEnabled) WebSocketAPI.SendValue<string?>("SAVED", entry.Content, false);
+        }
+        #endregion
 
         private static void OnGameStateChanged(GameStateProperty property) {
             switch (property) {

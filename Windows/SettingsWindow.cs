@@ -542,7 +542,7 @@ namespace ToNSaveManager.Windows
         }
 
         private void TimeFormat_CheckedChanged(object? sender, EventArgs e) => MainWindow.RefreshLists();
-        private void CheckXSOverlay_CheckedChanged(object? sender, EventArgs e) => MainWindow.SendXSNotification(true);
+        private void CheckXSOverlay_CheckedChanged(object? sender, EventArgs e) => XSOverlay.SendSaveNotification(true);
         private void CheckPlayAudio_CheckedChanged(object? sender, EventArgs e) {
             linkSelectAudioCopy.Visible = checkPlayAudioCopy.Checked;
             linkSelectAudioSave.Visible = checkPlayAudioSave.Checked;
@@ -678,7 +678,7 @@ namespace ToNSaveManager.Windows
 
             if (show.Accept && !string.IsNullOrEmpty(show.Text) && int.TryParse(show.Text.Trim(), out int result) && result != original) {
                 Settings.Get.LogUpdateRate = Math.Clamp(result, 10, 5000);
-                MainWindow.LogWatcher.Interval = Settings.Get.LogUpdateRate;
+                ToNLogHandler.LogWatcher.Interval = Settings.Get.LogUpdateRate;
                 Settings.Export();
             }
         }

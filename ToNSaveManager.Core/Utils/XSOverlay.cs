@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
+using ToNSaveManager.Localization;
+using ToNSaveManager.Models;
 
 namespace ToNSaveManager.Utils
 {
@@ -41,6 +43,30 @@ namespace ToNSaveManager.Utils
     internal class XSOverlay
     {
         public const int DefaultPort = 42069;
+
+        private static XSOverlay? m_Instance;
+        private static XSOverlay Instance {
+            get {
+                if (m_Instance == null) {
+                    m_Instance = new XSOverlay();
+                    m_Instance.SetPort(Settings.Get.XSOverlayPort);
+                }
+                return m_Instance;
+            }
+        }
+
+        /// <summary>
+        /// Shows the "save data stored" popup, if enabled in the settings.
+        /// With <paramref name="test"/> it shows the "notifications enabled" popup instead.
+        /// </summary>
+        internal static void SendSaveNotification(bool test = false) {
+            if (!AppCore.Started || !Settings.Get.XSOverlay) return;
+            const string message = "<color=#ff9999><b>ToN</b></color><color=grey>:</color> <color=#adff2f>Save Data Stored</color>";
+            const string msgtest = "<color=#ff9999><b>ToN</b></color><color=grey>:</color> <color=#adff2f>Notifications Enabled</color>";
+
+            if (test) Instance.Send(LANG.S("SETTINGS.XSOVERLAY.TOGGLE") ?? msgtest, 1);
+            else Instance.Send(LANG.S("SETTINGS.XSOVERLAY.MESSAGE") ?? message);
+        }
         public readonly Socket BroadcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         public readonly IPEndPoint EndPoint;
 
