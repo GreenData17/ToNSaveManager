@@ -1,15 +1,10 @@
 ﻿namespace ToNSaveManager.Utils.LogParser
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Globalization;
-    using System.IO;
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
     using ToNSaveManager.Models;
-    using Timer = System.Windows.Forms.Timer;
 
     // Based on: https://github.com/vrcx-team/VRCX/blob/634f465927bfaef51bc04e67cf1659170953fac9/LogWatcher.cs
     public class LogWatcher<T> where T : LogContext
@@ -48,26 +43,49 @@
             var logPath = Path.Combine(AppCore.GetVRChatDataLocation(), "VRChat");
             m_LogDirectoryInfo = new DirectoryInfo(logPath);
             HomeWorldID = homeWorldID;
+            m_Timer = new Timer(OnTimer);
         }
 
-        private Timer m_Timer = new Timer();
+        private readonly Timer m_Timer;
+        private SynchronizationContext? m_Context;
+
+        private int m_Interval = 100;
         public int Interval {
-            get => m_Timer.Interval;
-            set => m_Timer.Interval = Math.Max(value, 10);
+            get => m_Interval;
+            set => m_Interval = Math.Max(value, 10);
         }
 
+        /// <summary>
+        /// Reads the logs once, then keeps reading them every <see cref="Interval"/> milliseconds.
+        /// Call this on the UI thread, ticks and events then run on that thread too.
+        /// </summary>
         public void Start()
         {
-            m_Timer.Enabled = true;
+            m_Context = SynchronizationContext.Current;
 
-            LogTick(null, null);
-            m_Timer.Tick += LogTick;
-            m_Timer.Start();
+            LogTick(true);
+            m_Timer.Change(m_Interval, Timeout.Infinite);
         }
 
-        private void LogTick(object? sender, EventArgs? e)
+        private void OnTimer(object? state)
         {
-            bool firstRun = sender == null && SkipParsedLogs;
+            if (m_Context == null) TickAndRearm(null);
+            else m_Context.Post(TickAndRearm, null);
+        }
+
+        // One-shot timer, re-armed after each tick so ticks never overlap
+        private void TickAndRearm(object? state)
+        {
+            try {
+                LogTick(false);
+            } finally {
+                m_Timer.Change(m_Interval, Timeout.Infinite);
+            }
+        }
+
+        private void LogTick(bool isFirstTick)
+        {
+            bool firstRun = isFirstTick && SkipParsedLogs;
             m_LogDirectoryInfo.Refresh();
 
             if (m_LogDirectoryInfo.Exists)
@@ -112,7 +130,7 @@
                     if (firstRun && logContext.Authenticated && !logContext.Validate(logContext.Position, fileInfo)) {
                         logContext.RoomReadPos = logContext.Position = fileInfo.Length;
                     } else {
-                        ParseLog(fileInfo, logContext, sender == null);
+                        ParseLog(fileInfo, logContext, isFirstTick);
                     }
 
                     if (!logContext.Initialized)

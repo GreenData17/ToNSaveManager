@@ -1,21 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using ToNSaveManager.Localization;
-using ToNSaveManager.Models;
+﻿using ToNSaveManager.Models;
 using ToNSaveManager.Models.Index;
-using ToNSaveManager.Utils.API;
-using ToNSaveManager.Utils.Discord;
-using ToNSaveManager.Utils.OpenRGB;
 
 namespace ToNSaveManager.Utils.LogParser
 {
     internal class ToNLogContext : LogContext {
         internal static ToNLogContext? Instance { get; private set; }
         internal static bool CanSendChatbox => Instance != null && Instance.IsHomeWorld && Settings.Get.OSCSendChatbox;
+
+        // Raised only for the most recent log, the one VRChat is writing to right now
+        /// <summary>Joined an instance. Arguments: instance ID, is home world.</summary>
+        internal static event Action<string, bool>? InstanceJoined;
+        /// <summary>Left the current instance.</summary>
+        internal static event Action? InstanceLeft;
+        /// <summary>A player joined or left. Arguments: player, joined.</summary>
+        internal static event Action<LogPlayer, bool>? PlayerJoined;
+        /// <summary>The context was reset, after leaving a room or when reading starts.</summary>
+        internal static event Action? Awake;
+        /// <summary>Joined the home world and the settings ask to copy the most recent save code.</summary>
+        internal static event Action? HomeWorldCopyRequested;
+
+        /// <summary>
+        /// Asked before parsing a very large log file. Arguments: file name, readable file size.
+        /// Return false to skip the file. When not set, the file is parsed.
+        /// </summary>
+        internal static Func<string, string, bool>? ConfirmLargeLog;
 
         public bool HasLoadedSave { get; set; }
 
@@ -33,10 +41,7 @@ namespace ToNSaveManager.Utils.LogParser
             base.Exit();
             OnAwake();
 
-            if (IsRecent) {
-                DSRichPresence.SetInstanceID(string.Empty, false);
-                DSRichPresence.Initialize();
-            }
+            if (IsRecent) InstanceLeft?.Invoke();
         }
         public override void Enter(string name, DateTime date) {
             base.Enter(name, date);
@@ -49,11 +54,10 @@ namespace ToNSaveManager.Utils.LogParser
 
             if (IsRecent) {
                 ToNGameState.SetInstanceURL(instanceID);
-                WebSocketAPI.SendValue("INSTANCE", instanceID);
-                DSRichPresence.SetInstanceID(instanceID, isHomeWorld);
+                InstanceJoined?.Invoke(instanceID, isHomeWorld);
 
                 if (isHomeWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && AppCore.Started)
-                    MainWindow.CopyRecentData();
+                    HomeWorldCopyRequested?.Invoke();
             }
         }
 
@@ -62,7 +66,7 @@ namespace ToNSaveManager.Utils.LogParser
 
             if (IsRecent) {
                 ToNGameState.SetPlayerCount(Players.Count);
-                WebSocketAPI.EventPlayerJoin.Send(player, true);
+                PlayerJoined?.Invoke(player, true);
             }
         }
         public override void Leave(LogPlayer player) {
@@ -70,7 +74,7 @@ namespace ToNSaveManager.Utils.LogParser
 
             if (IsRecent) {
                 ToNGameState.SetPlayerCount(Players.Count);
-                WebSocketAPI.EventPlayerJoin.Send(player, false);
+                PlayerJoined?.Invoke(player, false);
             }
         }
 
@@ -78,7 +82,7 @@ namespace ToNSaveManager.Utils.LogParser
             if (IsRecent) {
                 Instance = this;
                 ToNGameState.ClearStates();
-                LilOSC.SetChatboxMessage(string.Empty);
+                Awake?.Invoke();
             }
 
             ClearSummary();
@@ -141,7 +145,7 @@ namespace ToNSaveManager.Utils.LogParser
             if (Terrors.IsEmpty != matrix.IsEmpty) {
                 SetRoundActive(Terrors.IsEmpty); // Is living
                 // Live Build Fallback
-                if (Location.IsEmpty) DSRichPresence.UpdateTimestamp();
+                if (Location.IsEmpty) ToNGameState.ResetTimestamp();
             }
 
             matrix.IsSaboteur = IsSaboteour && !matrix.IsEmpty;
@@ -168,12 +172,8 @@ namespace ToNSaveManager.Utils.LogParser
 
         public override bool Validate(long position, FileInfo fileInfo) {
             long remainingSize = fileInfo.Length - position;
-            if (remainingSize > PLEASE_DONT_SLEEP_ON_VRCHAT) {
-                DialogResult result = MessageBox.Show(
-                    string.Format(LANG.S("MESSAGE.LARGE_LOG_WARNING") ?? "You are about to parse a very large VRChat log file!\nFile Name: {0}\nFile Size: {1}\n\nParsing this log file will take some extra time.\nWould you like to continue reading this file?", fileInfo.Name, GetReadableFileSize(fileInfo.Length)),
-                    LANG.S("MESSAGE.LARGE_LOG_WARNING.TITLE") ?? "Parsing large log file!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                return result == DialogResult.Yes || result != DialogResult.No;
-            }
+            if (remainingSize > PLEASE_DONT_SLEEP_ON_VRCHAT && ConfirmLargeLog != null)
+                return ConfirmLargeLog(fileInfo.Name, GetReadableFileSize(fileInfo.Length));
 
             return true;
         }

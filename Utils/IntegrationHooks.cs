@@ -1,6 +1,7 @@
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils.API;
 using ToNSaveManager.Utils.Discord;
+using ToNSaveManager.Utils.LogParser;
 using ToNSaveManager.Utils.OpenRGB;
 
 namespace ToNSaveManager.Utils {
@@ -16,6 +17,17 @@ namespace ToNSaveManager.Utils {
             ToNGameState.TimestampReset += DSRichPresence.UpdateTimestamp;
             ToNGameState.Changed += OnGameStateChanged;
             ToNGameState.Damaged += OnDamaged;
+
+            ToNLogContext.InstanceJoined += (instanceID, isHomeWorld) => {
+                WebSocketAPI.SendValue("INSTANCE", instanceID);
+                DSRichPresence.SetInstanceID(instanceID, isHomeWorld);
+            };
+            ToNLogContext.InstanceLeft += () => {
+                DSRichPresence.SetInstanceID(string.Empty, false);
+                DSRichPresence.Initialize();
+            };
+            ToNLogContext.PlayerJoined += WebSocketAPI.EventPlayerJoin.Send;
+            ToNLogContext.Awake += () => LilOSC.SetChatboxMessage(string.Empty);
         }
 
         private static void OnGameStateChanged(GameStateProperty property) {

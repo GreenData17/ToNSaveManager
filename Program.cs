@@ -57,6 +57,13 @@ namespace ToNSaveManager
                     MessageBox.Show((LANG.S("MESSAGE.IMPORT_SAVE_ERROR") ?? "Error trying to import your save.") + "\n\n" + e, "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     if (!backupCreated) Application.Exit();
                 };
+                ToNLogContext.ConfirmLargeLog = (fileName, fileSize) => {
+                    DialogResult result = MessageBox.Show(
+                        string.Format(LANG.S("MESSAGE.LARGE_LOG_WARNING") ?? "You are about to parse a very large VRChat log file!\nFile Name: {0}\nFile Size: {1}\n\nParsing this log file will take some extra time.\nWould you like to continue reading this file?", fileName, fileSize),
+                        LANG.S("MESSAGE.LARGE_LOG_WARNING.TITLE") ?? "Parsing large log file!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    return result == DialogResult.Yes || result != DialogResult.No;
+                };
+                ToNLogContext.HomeWorldCopyRequested += MainWindow.CopyRecentData;
 
                 IntegrationHooks.Register();
 
