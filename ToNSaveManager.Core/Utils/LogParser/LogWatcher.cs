@@ -286,22 +286,26 @@
         }
 
         const string UserAuthKeyword = "User Authenticated: ";
+        // Newer VRChat builds no longer log "User Authenticated", only this line from the login checks
+        const string UserAuthKeywordNew = "post login checks for ";
         private bool ParseDisplayName(string line, DateTime lineDate, T logContext)
         {
-            if (!line.Contains(UserAuthKeyword)) return false;
+            int index;
+            if (line.Contains(UserAuthKeyword))
+                index = line.IndexOf(UserAuthKeyword, StringComparison.InvariantCulture) + UserAuthKeyword.Length;
+            else if (line.Contains(UserAuthKeywordNew))
+                index = line.IndexOf(UserAuthKeywordNew, StringComparison.InvariantCulture) + UserAuthKeywordNew.Length;
+            else
+                return false;
 
-            int index = line.IndexOf(UserAuthKeyword, StringComparison.InvariantCulture) + UserAuthKeyword.Length;
-            int length = line.IndexOf(" (", index, StringComparison.InvariantCulture) - index;
+            // Both are followed by "DisplayName (usr_...)", display names can contain " (" but the user ID can't
+            int idStart = line.LastIndexOf(" (usr_", StringComparison.InvariantCulture);
+            int idEnd = line.LastIndexOf(')');
 
-            if (index > -1 && length > 0 && index < line.Length && index + length < line.Length)
+            if (idStart > index && idEnd > idStart)
             {
-                string displayName = line.Substring(index, length);
-                logContext.DisplayName = displayName.Trim();
-
-                index = line.IndexOf("(");
-                length = line.LastIndexOf(')') - index;
-                string userID = line.Substring(index, length).Trim('(', ')', ' ', '\n', '\r');
-                logContext.UserID = userID;
+                logContext.DisplayName = line.Substring(index, idStart - index).Trim();
+                logContext.UserID = line.Substring(idStart + 2, idEnd - idStart - 2);
             }
             else
             {
