@@ -5,16 +5,16 @@ namespace ToNSaveManager.Utils.LogParser
 {
     internal class ToNLogContext : LogContext {
         internal static ToNLogContext? Instance { get; private set; }
-        internal static bool CanSendChatbox => Instance != null && Instance.IsHomeWorld && Settings.Get.OSCSendChatbox;
+        internal static bool CanSendChatbox => Instance != null && Instance.IsToNWorld && Settings.Get.OSCSendChatbox;
 
         // Raised only for the most recent log, the one VRChat is writing to right now
-        /// <summary>Joined an instance. Arguments: instance ID, is home world.</summary>
+        /// <summary>Joined an instance. Arguments: instance ID, is the ToN world.</summary>
         internal static event Action<string, bool>? InstanceJoined;
         /// <summary>Left the current instance.</summary>
         internal static event Action? InstanceLeft;
         /// <summary>A player joined or left. Arguments: player, joined.</summary>
         internal static event Action<LogPlayer, bool>? PlayerJoined;
-        /// <summary>The context was reset, after leaving a room or when reading starts.</summary>
+        /// <summary>The context was reset, after leaving an instance or when reading starts.</summary>
         internal static event Action? Awake;
 
         /// <summary>
@@ -47,14 +47,14 @@ namespace ToNSaveManager.Utils.LogParser
 
             if (IsRecent) ToNGameState.ClearStates();
         }
-        public override void Enter(string instanceID, bool isHomeWorld) {
-            base.Enter(instanceID, isHomeWorld);
+        public override void Enter(string instanceID, bool isToNWorld) {
+            base.Enter(instanceID, isToNWorld);
 
             if (IsRecent) {
                 ToNGameState.SetInstanceURL(instanceID);
-                InstanceJoined?.Invoke(instanceID, isHomeWorld);
+                InstanceJoined?.Invoke(instanceID, isToNWorld);
 
-                if (isHomeWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && AppCore.Started)
+                if (isToNWorld && Settings.Get.AutoCopy && Settings.Get.CopyOnJoin && AppCore.Started)
                     ToNLogHandler.CopyRecentData();
             }
         }
@@ -88,7 +88,7 @@ namespace ToNSaveManager.Utils.LogParser
             SetTerrorMatrix(TerrorMatrix.Empty);
             SetLocation(ToNIndex.Map.Empty);
             SetItem(ToNIndex.Item.Empty);
-            SetRoundResult(IsLeavingRoom ? ToNRoundResult.D : ToNRoundResult.R);
+            SetRoundResult(IsLeavingInstance ? ToNRoundResult.D : ToNRoundResult.R);
         }
 
         public override void OnInit() {

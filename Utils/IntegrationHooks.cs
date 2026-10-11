@@ -21,9 +21,9 @@ namespace ToNSaveManager.Utils {
             ToNGameState.Changed += OnGameStateChanged;
             ToNGameState.Damaged += OnDamaged;
 
-            ToNLogContext.InstanceJoined += (instanceID, isHomeWorld) => {
+            ToNLogContext.InstanceJoined += (instanceID, isToNWorld) => {
                 WebSocketAPI.SendValue("INSTANCE", instanceID);
-                DSRichPresence.SetInstanceID(instanceID, isHomeWorld);
+                DSRichPresence.SetInstanceID(instanceID, isToNWorld);
             };
             ToNLogContext.InstanceLeft += () => {
                 DSRichPresence.SetInstanceID(string.Empty, false);

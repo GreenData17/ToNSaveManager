@@ -33,7 +33,7 @@ namespace ToNSaveManager.Windows
                 string fullPath = isOpen ? ToNLogContext.Instance.FilePath : Path.GetFullPath("instance_logs.log");
 
                 if (!isOpen) {
-                    string instanceLogs = ToNLogContext.Instance.GetRoomLogs();
+                    string instanceLogs = ToNLogContext.Instance.GetInstanceLogs();
                     File.WriteAllText(fullPath, instanceLogs);
 
                     System.Collections.Specialized.StringCollection paths = [fullPath];

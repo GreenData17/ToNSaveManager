@@ -35,14 +35,14 @@
         long GetParsedPos(string name) => AppCore.SaveData.GetParsedPos(name);
         void SetParsedPos(string name, long pos, bool save) => AppCore.SaveData.SetParsedPos(name, pos, save);
 
-        string HomeWorldID = string.Empty;
+        string ToNWorldID = string.Empty;
         #endregion
 
-        public LogWatcher(string homeWorldID)
+        public LogWatcher(string tonWorldID)
         {
             var logPath = Path.Combine(AppCore.GetVRChatDataLocation(), "VRChat");
             m_LogDirectoryInfo = new DirectoryInfo(logPath);
-            HomeWorldID = homeWorldID;
+            ToNWorldID = tonWorldID;
             m_Timer = new Timer(OnTimer);
         }
 
@@ -115,7 +115,7 @@
                         if (firstRun)
                         {
                             logContext.Position = GetParsedPos(logContext.DateKey);
-                            logContext.RoomReadPos = logContext.Position;
+                            logContext.InstanceReadPos = logContext.Position;
 
                             if (!logContext.Authenticated) logContext.Position = 0;
                         }
@@ -128,7 +128,7 @@
                     }
 
                     if (firstRun && logContext.Authenticated && !logContext.Validate(logContext.Position, fileInfo)) {
-                        logContext.RoomReadPos = logContext.Position = fileInfo.Length;
+                        logContext.InstanceReadPos = logContext.Position = fileInfo.Length;
                     } else {
                         ParseLog(fileInfo, logContext, isFirstTick);
                     }
@@ -138,14 +138,14 @@
                         logContext.OnInit();
 
                         if (logContext.Authenticated) {
-                            logContext.Position = logContext.RoomReadPos;
+                            logContext.Position = logContext.InstanceReadPos;
                             i = i - 1;
                             continue;
                         }
                     }
 
                     if (SkipParsedLogs && logContext.Authenticated)
-                        SetParsedPos(logContext.DateKey, isOlder ? logContext.Position : logContext.RoomReadPos, firstRun);
+                        SetParsedPos(logContext.DateKey, isOlder ? logContext.Position : logContext.InstanceReadPos, firstRun);
 
                     logContext.Length = fileInfo.Length;
                 }
@@ -174,7 +174,7 @@
             T? context = null;
             foreach (var pair in m_LogContextMap)
             {
-                if (context == null || pair.Value.RoomDate > context.RoomDate)
+                if (context == null || pair.Value.InstanceDate > context.InstanceDate)
                     context = pair.Value;
             }
 
@@ -324,7 +324,7 @@
                 if (index >= line.Length) return false;
 
                 var instanceId = line.Substring(index).Trim('\n', '\r');
-                logContext.Enter(instanceId, instanceId.Contains(HomeWorldID));
+                logContext.Enter(instanceId, instanceId.Contains(ToNWorldID));
 
                 return true;
             }
@@ -337,7 +337,7 @@
                 var worldName = line.Substring(index).Trim('\n', '\r');
                 logContext.Enter(worldName, lineDate);
 
-                logContext.RoomReadPos = logContext.ReadPos;
+                logContext.InstanceReadPos = logContext.ReadPos;
 
                 return true;
             }

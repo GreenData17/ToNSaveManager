@@ -7,8 +7,8 @@ namespace ToNSaveManager.Utils.LogParser {
     /// Reads the VRChat logs and turns them into game state, stats and save entries.
     /// </summary>
     internal static class ToNLogHandler {
-        internal const string HomeWorldID = "wrld_a61cdabe-1218-4287-9ffc-2a4d1414e5bd";
-        internal static readonly LogWatcher<ToNLogContext> LogWatcher = new LogWatcher<ToNLogContext>(HomeWorldID);
+        internal const string ToNWorldID = "wrld_a61cdabe-1218-4287-9ffc-2a4d1414e5bd";
+        internal static readonly LogWatcher<ToNLogContext> LogWatcher = new LogWatcher<ToNLogContext>(ToNWorldID);
 
         /// <summary>A log line without its timestamp prefix, raised before Core handles it.</summary>
         internal static event Action<string, ToNLogContext>? LineRead;
@@ -383,9 +383,9 @@ namespace ToNSaveManager.Utils.LogParser {
             entry.PlayerCount = context.Players.Count;
             entry.Parent = collection;
 
-            if (Settings.Get.SaveNames) entry.Players = context.GetRoomString();
+            if (Settings.Get.SaveNames) entry.Players = context.GetPlayerList();
             if (Settings.Get.SaveRoundInfo) {
-                entry.RResult = context.IsLeavingRoom ? ToNRoundResult.D : context.Summary.Result;
+                entry.RResult = context.IsLeavingInstance ? ToNRoundResult.D : context.Summary.Result;
 
                 if (!context.Summary.IsEmpty) {
                     TerrorMatrix killers = context.Summary.Terrors;
@@ -405,7 +405,7 @@ namespace ToNSaveManager.Utils.LogParser {
                 if (!context.HasLoadedSave) entry.Pre = true;
             }
 
-            // if (!context.IsHomeWorld) entry.Note = "(BETA) " + entry.Note;
+            // if (!context.IsToNWorld) entry.Note = "(BETA) " + entry.Note;
 
             EntryAdded?.Invoke(collection, entry, ind);
 

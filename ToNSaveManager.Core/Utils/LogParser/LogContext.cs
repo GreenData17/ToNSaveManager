@@ -20,14 +20,14 @@ namespace ToNSaveManager.Utils.LogParser {
         public bool Authenticated;
 
         // Recent Instance info
-        public bool IsLeavingRoom { get; private set; }
-        public long RoomReadPos { get; set; }
-        public string? RoomName { get; private set; }
+        public bool IsLeavingInstance { get; private set; }
+        public long InstanceReadPos { get; set; }
+        public string? WorldName { get; private set; }
 
         public string? InstanceID { get; private set; }
-        public bool IsHomeWorld { get; private set; }
+        public bool IsToNWorld { get; private set; }
 
-        public DateTime RoomDate { get; private set; }
+        public DateTime InstanceDate { get; private set; }
         public readonly HashSet<LogPlayer> Players = new HashSet<LogPlayer>();
 
         /*
@@ -72,7 +72,7 @@ namespace ToNSaveManager.Utils.LogParser {
         }
 
         /// <summary>
-        /// Called when a player joins the room.
+        /// Called when a player joins the instance.
         /// </summary>
         public virtual void Join(LogPlayer player) {
             if (!Players.Contains(player))
@@ -80,7 +80,7 @@ namespace ToNSaveManager.Utils.LogParser {
         }
 
         /// <summary>
-        /// Called when a player leaves the room.
+        /// Called when a player leaves the instance.
         /// </summary>
         public virtual void Leave(LogPlayer player) {
             if (Players.Contains(player))
@@ -88,29 +88,29 @@ namespace ToNSaveManager.Utils.LogParser {
         }
 
         /// <summary>
-        /// Called when user joins a new room.
+        /// Called when user enters a world, before the instance is known.
         /// </summary>
         public virtual void Enter(string name, DateTime date) {
-            RoomName = name;
-            RoomDate = date;
+            WorldName = name;
+            InstanceDate = date;
             Players.Clear();
 
-            Logger.Info("Entering Room Name: " + name);
-            IsLeavingRoom = false;
+            Logger.Info("Entering world: " + name);
+            IsLeavingInstance = false;
         }
         /// <summary>
-        /// Called when user is leaving room.
+        /// Called when user is leaving the instance.
         /// </summary>
         public virtual void Exit() {
             Logger.Info("Leaving instance...");
-            IsLeavingRoom = true;
+            IsLeavingInstance = true;
         }
-        public virtual void Enter(string instanceID, bool isHomeWorld) {
+        public virtual void Enter(string instanceID, bool isToNWorld) {
             InstanceID = instanceID;
-            IsHomeWorld = isHomeWorld;
+            IsToNWorld = isToNWorld;
 
-            Logger.Info($"Instace [{isHomeWorld}] : {instanceID}");
-            IsLeavingRoom = false;
+            Logger.Info($"Instance [{isToNWorld}] : {instanceID}");
+            IsLeavingInstance = false;
         }
 
         public virtual void Pickup(string name) {
@@ -125,9 +125,9 @@ namespace ToNSaveManager.Utils.LogParser {
         }
 
         /// <summary>
-        /// Get's a list of players in this room as a string.
+        /// Get's a list of players in this instance as a string.
         /// </summary>
-        public string GetRoomString(bool lineBreak = true) {
+        public string GetPlayerList(bool lineBreak = true) {
             StringBuilder sb = new StringBuilder();
             const string start = "- ";
             sb.Append(start);
@@ -135,11 +135,11 @@ namespace ToNSaveManager.Utils.LogParser {
             return sb.ToString();
         }
 
-        public string GetRoomLogs() {
+        public string GetInstanceLogs() {
             string content;
 
             using (FileStream fileStream = new FileStream(this.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                fileStream.Seek(RoomReadPos, SeekOrigin.Begin);
+                fileStream.Seek(InstanceReadPos, SeekOrigin.Begin);
 
                 using (StreamReader reader = new StreamReader(fileStream)) {
                     content = reader.ReadToEnd();
