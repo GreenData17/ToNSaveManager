@@ -43,7 +43,10 @@ namespace ToNSaveManager.Utils.API {
         internal static void Initialize() {
             if (Settings.Get.WebSocketEnabled && Server == null) {
                 int port = Settings.Get.WebSocketPort > 0 ? Settings.Get.WebSocketPort : DEFAULT_PORT;
-                Server = new WebSocketServer(new List<string>() { IPAddress.Loopback.ToString(), "localhost" }, port);
+                // On Linux each host name only answers on its own address, browsers connect to 127.0.0.1 with "Host: localhost"
+                List<string> hostnames = OperatingSystem.IsWindows() ? [IPAddress.Loopback.ToString(), "localhost"] : ["*"];
+                Server = new WebSocketServer(hostnames, port);
+                Server.PermittedIpAddresses.AddRange([IPAddress.Loopback.ToString(), IPAddress.IPv6Loopback.ToString()]);
                 //Server.AddWebSocketService<WebSocketAPI>("/");
 
                 Server.ClientConnected += Server_ClientConnected;
