@@ -5,7 +5,6 @@ using ToNSaveManager.Models.Index;
 using Newtonsoft.Json;
 using ToNSaveManager.Utils.Extensions;
 using ToNSaveManager.Models;
-using System.Diagnostics;
 
 namespace ToNSaveManager.Utils.OpenRGB
 {

@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ToNSaveManager.Utils.OpenRGB {
     internal class RGBProfile {
@@ -12,9 +7,8 @@ namespace ToNSaveManager.Utils.OpenRGB {
         internal const string FileName = "OpenRGB_Setup.json";
         internal const string GeneratedFileName = "openrgb_device_keys.json";
 
-        internal static void OpenFile() {
+        internal static void EnsureFile() {
             if (!File.Exists(FileName)) Instance.Export();
-            MainWindow.OpenExternalLink(FileName);
         }
 
         public string IP = "127.0.0.1";

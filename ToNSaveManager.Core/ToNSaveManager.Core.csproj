@@ -17,6 +17,7 @@
         <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
         <PackageReference Include="Jint" Version="4.2.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="OpenRGB.NET" Version="3.1.1" />
     </ItemGroup>
 
     <ItemGroup>

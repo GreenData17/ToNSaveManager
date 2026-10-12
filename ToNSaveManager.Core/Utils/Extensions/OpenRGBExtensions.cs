@@ -1,9 +1,4 @@
 ﻿using OpenRGB.NET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ToNSaveManager.Utils.Extensions {
     internal static class OpenRGBExtensions {

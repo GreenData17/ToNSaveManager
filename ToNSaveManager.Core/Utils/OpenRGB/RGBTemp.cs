@@ -1,4 +1,5 @@
-﻿using RGBColor = OpenRGB.NET.Color;
+﻿using System.Drawing;
+using RGBColor = OpenRGB.NET.Color;
 
 namespace ToNSaveManager.Utils.OpenRGB {
     internal struct RGBTemp {

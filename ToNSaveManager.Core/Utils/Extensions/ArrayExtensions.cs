@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ToNSaveManager.Utils.Extensions {
+﻿namespace ToNSaveManager.Utils.Extensions {
     internal static class ArrayExtensions {
         public static void FillRange<T>(this T[] array, T value, int start, int end, bool safe = true) {
             int s = Math.Min(start, end);
