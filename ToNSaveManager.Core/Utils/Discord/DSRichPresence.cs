@@ -241,13 +241,15 @@ namespace ToNSaveManager.Utils.Discord {
 
         // Check game running
         internal static bool VRCIsOpen;
+        // Under Proton the process keeps its .exe extension
+        static readonly string VRChatProcessName = OperatingSystem.IsWindows() ? "VRChat" : "VRChat.exe";
 
         static async Task WaitForVRChat_Interval() {
             while (true) {
                 Log.Debug("Attempting to find game process...");
 
                 try {
-                    var vrc = Process.GetProcessesByName("VRChat");
+                    var vrc = Process.GetProcessesByName(VRChatProcessName);
                     if (vrc.Length > 0) {
                         Log.Debug("Game process found, initializing.");
 
@@ -257,7 +259,7 @@ namespace ToNSaveManager.Utils.Discord {
                         Log.Debug("Waiting for game exit.");
                         while (vrc.Length > 0) {
                             await Task.Delay(60000);
-                            vrc = Process.GetProcessesByName("VRChat");
+                            vrc = Process.GetProcessesByName(VRChatProcessName);
                         }
 
                         Log.Warning("VRChat game has closed.");
