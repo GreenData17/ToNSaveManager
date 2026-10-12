@@ -18,6 +18,8 @@
         <PackageReference Include="Jint" Version="4.2.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="OpenRGB.NET" Version="3.1.1" />
+        <PackageReference Include="VRChat.OSCQuery" Version="0.0.7" />
+        <PackageReference Include="VRCOscLib" Version="1.6.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -10,7 +10,6 @@ using ToNSaveManager.Models;
 using ToNSaveManager.Models.Index;
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils;
-using ToNSaveManager.Utils.LogParser;
 using static System.Windows.Forms.AxHost;
 
 namespace ToNSaveManager
@@ -118,12 +117,6 @@ namespace ToNSaveManager
 
         private void StatsWindow_ResizeEnd(object sender, EventArgs e) {
             Refresh();
-        }
-
-        internal static void UpdateChatboxContent() {
-            if (ToNGameState.IsActiveInRound || !AppCore.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
-            string template = TemplateManager.ReplaceTemplate(Settings.Get.OSCMessageInfoTemplate.Template).Replace("\\n", "\n");
-            LilOSC.SetChatboxMessage(template);
         }
 
         private void listBoxEntries_DrawItem(object sender, DrawItemEventArgs e) {

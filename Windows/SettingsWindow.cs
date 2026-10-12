@@ -615,7 +615,7 @@ namespace ToNSaveManager.Windows
         }
 
         private void checkSendChatbox_CheckedChanged(object? sender, EventArgs e) {
-            if (checkSendChatbox.Checked) StatsWindow.UpdateChatboxContent();
+            if (checkSendChatbox.Checked) LilOSC.UpdateChatboxContent();
             else LilOSC.SetChatboxMessage(string.Empty, force: true);
         }
 
@@ -626,7 +626,7 @@ namespace ToNSaveManager.Windows
                 Settings.Get.OSCMessageInfoTemplate.Template = string.IsNullOrEmpty(edit.Text) ? Settings.Default.OSCMessageInfoTemplate.Template : edit.Text;
                 Settings.Export();
 
-                StatsWindow.UpdateChatboxContent();
+                LilOSC.UpdateChatboxContent();
             }
         }
 

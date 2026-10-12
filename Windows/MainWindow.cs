@@ -96,7 +96,7 @@ namespace ToNSaveManager {
             LilOSC.Initialize();
             WebSocketAPI.Initialize();
             DSRichPresence.Initialize(true);
-            StatsWindow.UpdateChatboxContent();
+            LilOSC.UpdateChatboxContent();
             OpenRGBControl.SetTerrorMatrix(OpenRGBControl.Terrors);
 
             if (Args.ContainsArg("--emulator") || Args.ContainsArg("--emu") || Args.ContainsArg("-e"))

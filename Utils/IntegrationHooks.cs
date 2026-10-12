@@ -36,7 +36,7 @@ namespace ToNSaveManager.Utils {
             ToNLogHandler.Tick += OnTick;
             ToNLogHandler.SaveStored += OnSaveStored;
             ToNLogHandler.PlayerDied += () => LilOSC.SetDamage(byte.MaxValue);
-            ToNLogHandler.LobbyCleared += StatsWindow.UpdateChatboxContent;
+            ToNLogHandler.LobbyCleared += LilOSC.UpdateChatboxContent;
         }
 
         #region Log Handling
@@ -93,7 +93,7 @@ namespace ToNSaveManager.Utils {
             DSRichPresence.Send();
 
             if (Settings.Get.OSCMessageInfoTemplate.IsModified)
-                StatsWindow.UpdateChatboxContent();
+                LilOSC.UpdateChatboxContent();
 
             LilOSC.SendData();
             WebSocketAPI.SendEventUpdate();
@@ -125,7 +125,7 @@ namespace ToNSaveManager.Utils {
 
                 case GameStateProperty.ActiveInRound:
                     if (ToNGameState.IsActiveInRound) LilOSC.SetChatboxMessage(string.Empty);
-                    else StatsWindow.UpdateChatboxContent();
+                    else LilOSC.UpdateChatboxContent();
                     break;
 
                 case GameStateProperty.Alive:

@@ -1,7 +1,8 @@
 ﻿using ToNSaveManager.Models;
 using ToNSaveManager.Models.Index;
 using System.Numerics;
-using Timer = System.Windows.Forms.Timer;
+using System.Drawing;
+using Timer = ToNSaveManager.Utils.ContextTimer;
 using ToNSaveManager.Utils.LogParser;
 using ToNSaveManager.Models.Stats;
 
@@ -291,6 +292,11 @@ namespace ToNSaveManager.Utils
             }
         }
 
+        internal static void UpdateChatboxContent() {
+            if (ToNGameState.IsActiveInRound || !AppCore.Started || !ToNLogContext.CanSendChatbox || string.IsNullOrEmpty(Settings.Get.OSCMessageInfoTemplate.Template)) return;
+            string template = TemplateManager.ReplaceTemplate(Settings.Get.OSCMessageInfoTemplate.Template).Replace("\\n", "\n");
+            SetChatboxMessage(template);
+        }
 
         static bool ItemStatus = true;
         internal static void SetItemStatus(bool status) {
