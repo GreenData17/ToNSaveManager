@@ -43,16 +43,14 @@
             var logPath = Path.Combine(AppCore.GetVRChatDataLocation(), "VRChat");
             m_LogDirectoryInfo = new DirectoryInfo(logPath);
             ToNWorldID = tonWorldID;
-            m_Timer = new Timer(OnTimer);
+            m_Timer.Tick += (sender, e) => LogTick(false);
         }
 
-        private readonly Timer m_Timer;
-        private SynchronizationContext? m_Context;
+        private readonly ContextTimer m_Timer = new ContextTimer();
 
-        private int m_Interval = 100;
         public int Interval {
-            get => m_Interval;
-            set => m_Interval = Math.Max(value, 10);
+            get => m_Timer.Interval;
+            set => m_Timer.Interval = Math.Max(value, 10);
         }
 
         /// <summary>
@@ -61,26 +59,8 @@
         /// </summary>
         public void Start()
         {
-            m_Context = SynchronizationContext.Current;
-
             LogTick(true);
-            m_Timer.Change(m_Interval, Timeout.Infinite);
-        }
-
-        private void OnTimer(object? state)
-        {
-            if (m_Context == null) TickAndRearm(null);
-            else m_Context.Post(TickAndRearm, null);
-        }
-
-        // One-shot timer, re-armed after each tick so ticks never overlap
-        private void TickAndRearm(object? state)
-        {
-            try {
-                LogTick(false);
-            } finally {
-                m_Timer.Change(m_Interval, Timeout.Infinite);
-            }
+            m_Timer.Start();
         }
 
         private void LogTick(bool isFirstTick)
