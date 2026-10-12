@@ -1,7 +1,5 @@
 ﻿using DiscordRPC;
-using DiscordRPC.Logging;
 using DiscordRPC.Message;
-using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
