@@ -123,7 +123,6 @@ namespace ToNSaveManager {
             ctxMenuEntriesDelete.Localize("MAIN.CTX_DELETE");
 
             Entry.LocalizeContent();
-            DSWebHook.LocalizeContent();
 
             RightToLeft = LANG.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
         }
