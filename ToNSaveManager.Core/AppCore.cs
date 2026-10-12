@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Models;
+using ToNSaveManager.Utils;
 using ToNSaveManager.Utils.Discord;
 
 namespace ToNSaveManager
@@ -80,6 +81,8 @@ namespace ToNSaveManager
             LANG.LanguageChanged += DSWebHook.LocalizeContent;
             Entry.LocalizeContent();
             DSWebHook.LocalizeContent();
+
+            Integrations.Register();
         }
 
         #region Find VRChat Location

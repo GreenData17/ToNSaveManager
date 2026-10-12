@@ -7,8 +7,6 @@ using ToNSaveManager.Windows;
 using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Localization;
 using ToNSaveManager.Utils.LogParser;
-using ToNSaveManager.Utils.OpenRGB;
-using ToNSaveManager.Utils.API;
 using ToNSaveManager.Utils.JSPlugins;
 
 namespace ToNSaveManager {
@@ -93,11 +91,7 @@ namespace ToNSaveManager {
             if (Settings.Get.AutoCopy && Settings.Get.CopyOnOpen)
                 ToNLogHandler.CopyRecentData();
 
-            LilOSC.Initialize();
-            WebSocketAPI.Initialize();
-            DSRichPresence.Initialize(true);
-            LilOSC.UpdateChatboxContent();
-            OpenRGBControl.SetTerrorMatrix(OpenRGBControl.Terrors);
+            Integrations.Start();
 
             if (Args.ContainsArg("--emulator") || Args.ContainsArg("--emu") || Args.ContainsArg("-e"))
                 EmulatorWindow.Open(this);

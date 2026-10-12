@@ -11,6 +11,8 @@ using ToNSaveManager.Utils;
 using ToNSaveManager.Windows;
 using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Utils.LogParser;
+using ToNSaveManager.Utils.API;
+using ToNSaveManager.Utils.JSPlugins;
 
 namespace ToNSaveManager
 {
@@ -64,7 +66,12 @@ namespace ToNSaveManager
                     return result == DialogResult.Yes || result != DialogResult.No;
                 };
 
-                IntegrationHooks.Register();
+                ToNLogHandler.LineRead += (line, context) => JSEngine.InvokeOnLine(line);
+                ToNLogHandler.Tick += JSEngine.InvokeOnTick;
+                WebSocketAPI.MessageReceived += message => {
+                    if (JSEngine.Initialized) JSEngine.InvokeOnEvent(new WebSocketAPI.EventValue<string>("WEBSOCKET", message));
+                };
+                WebSocketAPI.EventQueued += JSEngine.InvokeOnEvent;
 
                 ToNStats.StatChanged += (key, value) => StatsWindow.RefreshTable();
                 LANG.LanguageAdded += () => SettingsWindow.Instance?.FillLanguageBox();
@@ -105,7 +112,7 @@ namespace ToNSaveManager
             Logger.Log("Saving before app exit...");
             AppCore.SaveData.Export();
             ToNLogHandler.WriteChanges();
-            OSCLib.Dispose();
+            Integrations.Stop();
             Logger.Log("Done.");
         }
 
