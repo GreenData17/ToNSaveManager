@@ -15,6 +15,10 @@ namespace ToNSaveManager.Utils {
     internal static class IntegrationHooks {
         internal static void Register() {
             ToNStats.StatChanged += WebSocketAPI.EventStats.Send;
+            WebSocketAPI.MessageReceived += message => {
+                if (JSEngine.Initialized) JSEngine.InvokeOnEvent(new WebSocketAPI.EventValue<string>("WEBSOCKET", message));
+            };
+            WebSocketAPI.EventQueued += JSEngine.InvokeOnEvent;
 
             ToNGameState.Clearing += WebSocketAPI.ClearBuffer;
             ToNGameState.TimestampReset += DSRichPresence.UpdateTimestamp;

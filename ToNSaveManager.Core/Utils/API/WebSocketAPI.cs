@@ -1,18 +1,12 @@
-﻿using Jint.Native;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using System.Drawing;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ToNSaveManager.Models;
 using ToNSaveManager.Models.Index;
 using ToNSaveManager.Models.Stats;
-using ToNSaveManager.Utils.JSPlugins;
 using ToNSaveManager.Utils.LogParser;
 // using WebSocketSharp;
 // using WebSocketSharp.Server;
@@ -22,6 +16,11 @@ namespace ToNSaveManager.Utils.API {
     internal class WebSocketAPI {
         static readonly LoggerSource Logger = new LoggerSource(nameof(WebSocketAPI));
         internal static WebSocketServer? Server;
+
+        /// <summary>A text message from a WebSocket client.</summary>
+        internal static event Action<string>? MessageReceived;
+        /// <summary>An event was queued for the clients, raised even when the server is off.</summary>
+        internal static event Action<IEvent>? EventQueued;
 
         static void OnOpen(WatsonWebsocket.ClientMetadata metadata) {
             Logger.Log("WebSocket client connected: " + metadata.Guid + " | " + metadata.Ip);
@@ -64,12 +63,12 @@ namespace ToNSaveManager.Utils.API {
         }
 
         private static void Server_MessageReceived(object? sender, WatsonWebsocket.MessageReceivedEventArgs e) {
-            if (e.MessageType != System.Net.WebSockets.WebSocketMessageType.Text || !JSEngine.Initialized) return;
+            if (e.MessageType != System.Net.WebSockets.WebSocketMessageType.Text) return;
 
             string message = Encoding.UTF8.GetString(e.Data);
             Logger.Debug("Received: " + message);
 
-            JSEngine.InvokeOnEvent(new EventValue<string>("WEBSOCKET", message));
+            MessageReceived?.Invoke(message);
         }
 
         private static void Server_ClientDisconnected(object? sender, WatsonWebsocket.DisconnectionEventArgs e) {
@@ -312,7 +311,7 @@ namespace ToNSaveManager.Utils.API {
             if (AppCore.Started) EventQueue.Enqueue(ev);
             if (buffer) EventBuffer.Add(ev);
 
-            JSEngine.InvokeOnEvent(ev);
+            EventQueued?.Invoke(ev);
         }
 
         internal static void SendEventUpdate() {
