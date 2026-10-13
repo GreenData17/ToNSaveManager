@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jint.Native.Function;
+﻿using Jint.Native.Function;
 
 namespace ToNSaveManager.Utils.JSPlugins.API {
     [JSEngineAPI("HTTP")]

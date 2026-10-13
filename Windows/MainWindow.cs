@@ -95,8 +95,6 @@ namespace ToNSaveManager {
 
             if (Args.ContainsArg("--emulator") || Args.ContainsArg("--emu") || Args.ContainsArg("-e"))
                 EmulatorWindow.Open(this);
-
-            JSEngine.InvokeOnReady();
         }
 
         internal void LocalizeContent() {

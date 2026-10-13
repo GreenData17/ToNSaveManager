@@ -9,10 +9,8 @@ using ToNSaveManager.Models;
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils;
 using ToNSaveManager.Windows;
-using ToNSaveManager.Utils.Discord;
 using ToNSaveManager.Utils.LogParser;
-using ToNSaveManager.Utils.API;
-using ToNSaveManager.Utils.JSPlugins;
+using ToNSaveManager.Utils.JSPlugins.API;
 
 namespace ToNSaveManager
 {
@@ -66,12 +64,8 @@ namespace ToNSaveManager
                     return result == DialogResult.Yes || result != DialogResult.No;
                 };
 
-                ToNLogHandler.LineRead += (line, context) => JSEngine.InvokeOnLine(line);
-                ToNLogHandler.Tick += JSEngine.InvokeOnTick;
-                WebSocketAPI.MessageReceived += message => {
-                    if (JSEngine.Initialized) JSEngine.InvokeOnEvent(new WebSocketAPI.EventValue<string>("WEBSOCKET", message));
-                };
-                WebSocketAPI.EventQueued += JSEngine.InvokeOnEvent;
+                SM.AlertHandler = (message, title, buttons, icon) =>
+                    (AlertResult)MessageBox.Show(message, title, (MessageBoxButtons)buttons, (MessageBoxIcon)icon);
 
                 ToNStats.StatChanged += (key, value) => StatsWindow.RefreshTable();
                 LANG.LanguageAdded += () => SettingsWindow.Instance?.FillLanguageBox();

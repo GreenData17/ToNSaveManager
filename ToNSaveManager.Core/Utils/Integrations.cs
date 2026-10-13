@@ -3,17 +3,22 @@ using ToNSaveManager.Models;
 using ToNSaveManager.Models.Stats;
 using ToNSaveManager.Utils.API;
 using ToNSaveManager.Utils.Discord;
+using ToNSaveManager.Utils.JSPlugins;
 using ToNSaveManager.Utils.LogParser;
 using ToNSaveManager.Utils.OpenRGB;
 
 namespace ToNSaveManager.Utils {
     /// <summary>
-    /// Forwards Core events to the integrations (WebSocket, OSC, Discord, OpenRGB).
+    /// Forwards Core events to the integrations (WebSocket, OSC, Discord, OpenRGB) and the JS plugins.
     /// </summary>
     internal static class Integrations {
         /// <summary>Called by <see cref="AppCore.Initialize"/>, before any log is read.</summary>
         internal static void Register() {
             ToNStats.StatChanged += WebSocketAPI.EventStats.Send;
+            WebSocketAPI.MessageReceived += message => {
+                if (JSEngine.Initialized) JSEngine.InvokeOnEvent(new WebSocketAPI.EventValue<string>("WEBSOCKET", message));
+            };
+            WebSocketAPI.EventQueued += JSEngine.InvokeOnEvent;
 
             ToNGameState.Clearing += WebSocketAPI.ClearBuffer;
             ToNGameState.TimestampReset += DSRichPresence.UpdateTimestamp;
@@ -38,13 +43,14 @@ namespace ToNSaveManager.Utils {
             ToNLogHandler.LobbyCleared += LilOSC.UpdateChatboxContent;
         }
 
-        /// <summary>Starts the integrations, call it after the log handler started.</summary>
+        /// <summary>Starts the integrations, call it after the log handler started. JSEngine.Initialize comes before that.</summary>
         internal static void Start() {
             LilOSC.Initialize();
             WebSocketAPI.Initialize();
             DSRichPresence.Initialize(true);
             LilOSC.UpdateChatboxContent();
             OpenRGBControl.SetTerrorMatrix(OpenRGBControl.Terrors);
+            JSEngine.InvokeOnReady();
         }
 
         internal static void Stop() {
@@ -58,6 +64,8 @@ namespace ToNSaveManager.Utils {
         static readonly Regex PATTERN_ITEM_ACTIVATED = new Regex(@"\[[\w ]+\] (Activated!|Deactivated!)", RegexOptions.Compiled);
 
         private static void OnLineRead(string line, ToNLogContext context) {
+            JSEngine.InvokeOnLine(line);
+
             if (context.IsRecent && AppCore.Started) HandleIntegrationLine(line, context);
 
             if (Settings.Get.WebSocketEnabled && Settings.Get.WebTrackerCompatibility && context.IsRecent) {
@@ -107,6 +115,7 @@ namespace ToNSaveManager.Utils {
 
             LilOSC.SendData();
             WebSocketAPI.SendEventUpdate();
+            JSEngine.InvokeOnTick();
         }
 
         private static void OnSaveStored(Entry entry) {

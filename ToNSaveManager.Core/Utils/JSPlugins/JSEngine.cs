@@ -48,7 +48,7 @@ namespace ToNSaveManager.Utils.JSPlugins {
     }
 
     internal static partial class JSEngine {
-        internal static string scriptsPath = Path.Combine(Program.ProgramDirectory, "scripts");
+        internal static string scriptsPath = Path.Combine(AppCore.ProgramDirectory, "scripts");
 
         internal static readonly StringBuilder SharedSB = new StringBuilder();
         internal static readonly LoggerSource Logger = new LoggerSource("JavaScript");
@@ -87,7 +87,9 @@ namespace ToNSaveManager.Utils.JSPlugins {
             TypeReference? typeReference;
             bool hasApiAttr = false;
 
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()) {
+            // The frontend can still provide APIs that are not in Core yet
+            Assembly[] assemblies = new[] { typeof(JSEngine).Assembly, Assembly.GetEntryAssembly() }.OfType<Assembly>().Distinct().ToArray();
+            foreach (Type type in assemblies.SelectMany(a => a.GetTypes())) {
                 typeReference = null;
                 hasApiAttr = false;
                 foreach (JSEngineAPIAttribute attr in type.GetCustomAttributes<JSEngineAPIAttribute>()) {

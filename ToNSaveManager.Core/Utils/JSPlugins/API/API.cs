@@ -1,4 +1,5 @@
-﻿using ToNSaveManager.Models.Index;
+﻿using System.Drawing;
+using ToNSaveManager.Models.Index;
 using ToNSaveManager.Models.Stats;
 
 namespace ToNSaveManager.Utils.JSPlugins.API {
