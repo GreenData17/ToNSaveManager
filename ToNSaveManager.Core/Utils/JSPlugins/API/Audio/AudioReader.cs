@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NAudio.Wave.SampleProviders;
+﻿using NAudio.Wave.SampleProviders;
 using NAudio.Wave;
+using ToNSaveManager.Utils.Audio;
 
 namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
     // https://github.com/naudio/NAudio/blob/5bd2860c20f8134a8021fa8e15f74b5209963e7d/NAudio/AudioFileReader.cs#L16
@@ -20,7 +16,7 @@ namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
             lockObject = new object();
             
             if (fromUrl) {
-                readerStream = new MediaFoundationReader(fileName);
+                readerStream = CreateMediaReader(fileName);
             } else if (fileName.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)) {
                 readerStream = new WaveFileReader(fileName);
                 if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat) {
@@ -29,20 +25,26 @@ namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
                 }
             } else if (fileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)) {
                 if (Environment.OSVersion.Version.Major < 6)
-                    readerStream = new Mp3FileReader(fileName);
+                    readerStream = new Mp3FileReaderBase(fileName, format => new AcmMp3FrameDecompressor(format));
                 else // make MediaFoundationReader the default for MP3 going forwards
-                    readerStream = new MediaFoundationReader(fileName);
+                    readerStream = CreateMediaReader(fileName);
             } else if (fileName.EndsWith(".aiff", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".aif", StringComparison.OrdinalIgnoreCase)) {
                 readerStream = new AiffFileReader(fileName);
             } else {
                 // fall back to media foundation reader, see if that can play it
-                readerStream = new MediaFoundationReader(fileName);
+                readerStream = CreateMediaReader(fileName);
             }
 
             sourceBytesPerSample = (readerStream.WaveFormat.BitsPerSample / 8) * readerStream.WaveFormat.Channels;
             sampleChannel = new SampleChannel(readerStream, false);
             destBytesPerSample = 4 * sampleChannel.WaveFormat.Channels;
             length = SourceToDest(readerStream.Length);
+        }
+
+        // Media Foundation only exists on Windows
+        private static WaveStream CreateMediaReader(string fileName) {
+            if (OperatingSystem.IsWindows()) return new MediaFoundationReader(fileName);
+            return new FFmpegStream(fileName);
         }
 
         public override WaveFormat WaveFormat => sampleChannel.WaveFormat;

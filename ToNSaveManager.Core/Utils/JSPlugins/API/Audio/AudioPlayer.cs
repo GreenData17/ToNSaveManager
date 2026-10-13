@@ -1,15 +1,18 @@
 ﻿using System.Diagnostics;
+using ToNSaveManager.Utils.Audio;
 
 namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
     [JSEngineAPI("AudioPlayer")]
     internal static class AudioPlayer {
         static AudioPlaybackEngine Playback => AudioPlaybackEngine.Instance;
 
-        static string YTDLPath = Path.Combine(Program.ProgramDirectory, "yt-dlp.exe");
+        static readonly string YTDLName = OperatingSystem.IsWindows() ? "yt-dlp.exe" : "yt-dlp";
+        // Windows: next to the program, elsewhere: from PATH
+        static readonly string? YTDLPath = OperatingSystem.IsWindows() ? Path.Combine(AppCore.ProgramDirectory, YTDLName) : LinuxAudio.FindInPath(YTDLName);
         static ProcessStartInfo? YTDLInfo;
         static string? GetUrl(string url) {
-            if (!File.Exists(YTDLPath)) {
-                Logger.Error($"Error trying to resolve '{url}'. The binary 'yt-dlp.exe' was not found.");
+            if (YTDLPath == null || !File.Exists(YTDLPath)) {
+                Logger.Error($"Error trying to resolve '{url}'. The binary '{YTDLName}' was not found.");
                 return null;
             }
 

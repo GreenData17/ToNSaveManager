@@ -1,5 +1,5 @@
-﻿using System.Media;
-using ToNSaveManager.Models;
+﻿using ToNSaveManager.Models;
+using ToNSaveManager.Utils.Audio;
 
 namespace ToNSaveManager.Utils {
     internal static class NotificationManager {
@@ -8,8 +8,8 @@ namespace ToNSaveManager.Utils {
         static readonly Stream? DefaultSaveStream = AppCore.GetEmbeddedResource("notification.wav");
         static readonly Stream? DefaultCopyStream = AppCore.GetEmbeddedResource("notification_copy.wav");
 
-        static readonly SoundPlayer StreamPlayer = new SoundPlayer();
-        static readonly SoundPlayer AudioPlayer = new SoundPlayer();
+        static readonly SoundChannel StreamPlayer = new SoundChannel();
+        static readonly SoundChannel AudioPlayer = new SoundChannel();
 
         internal static void Reset() {
             StreamPlayer.Stop();
@@ -38,9 +38,7 @@ namespace ToNSaveManager.Utils {
             if (!string.IsNullOrEmpty(fileName)) {
                 try {
                     if (File.Exists(fileName)) {
-                        AudioPlayer.Stop();
-                        AudioPlayer.SoundLocation = fileName;
-                        AudioPlayer.Play();
+                        AudioPlayer.Play(fileName);
                         return false;
                     }
 
@@ -55,13 +53,7 @@ namespace ToNSaveManager.Utils {
 
             if (fallback != null) {
                 try {
-                    StreamPlayer.Stop();
-                    StreamPlayer.Stream = null;
-
-                    fallback.Position = 0;
-                    StreamPlayer.Stream = fallback;
-
-                    StreamPlayer.Play();
+                    StreamPlayer.Play(fallback);
                 } catch (Exception ex) {
                     Logger.Error("Exception trying to play default audio.");
                     Logger.Error(ex);

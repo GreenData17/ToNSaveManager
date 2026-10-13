@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave.SampleProviders;
 using NAudio.Wave;
+using ToNSaveManager.Utils.Audio;
 
 namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
     class AudioPlaybackEngine : IDisposable {
@@ -7,7 +8,7 @@ namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
         private readonly MixingSampleProvider mixer;
 
         public AudioPlaybackEngine(int sampleRate = 44100, int channelCount = 2) {
-            outputDevice = new WaveOutEvent();
+            outputDevice = OperatingSystem.IsWindows() ? new WaveOutEvent() : new PipeWavePlayer();
             mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount));
             mixer.ReadFully = true;
             outputDevice.Init(mixer);
@@ -54,7 +55,7 @@ namespace ToNSaveManager.Utils.JSPlugins.API.Audio {
         public float[] AudioData { get; private set; }
         public WaveFormat WaveFormat { get; private set; }
         public CachedSound(string audioFileName) {
-            using (var audioFileReader = new AudioFileReader(audioFileName)) {
+            using (var audioFileReader = new AudioReader(audioFileName, false)) {
                 // TODO: could add resampling in here if required
                 WaveFormat = audioFileReader.WaveFormat;
                 var wholeFile = new List<float>((int)(audioFileReader.Length / 4));
