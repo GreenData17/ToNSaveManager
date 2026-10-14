@@ -1,4 +1,5 @@
 ﻿using System.Speech.Synthesis;
+using ToNSaveManager.Utils.Audio;
 
 namespace ToNSaveManager.Utils.JSPlugins.API {
     [JSEngineAPI("TTS")]
@@ -20,16 +21,28 @@ namespace ToNSaveManager.Utils.JSPlugins.API {
                 get => m_Volume;
                 set {
                     m_Volume = value;
-                    if (Synth != null) Synth.Volume = value;
+                    if (OperatingSystem.IsWindows() && Synth != null) Synth.Volume = value;
                 }
             }
 
-            internal bool IsSpeaking => Synth != null && LastPrompt != null && !LastPrompt.IsCompleted;
+            internal bool IsSpeaking {
+                get {
+                    if (!OperatingSystem.IsWindows()) return Linux.IsSpeaking;
+                    return Synth != null && LastPrompt != null && !LastPrompt.IsCompleted;
+                }
+            }
 
             internal SpeechSynthesizer? Synth;
             internal Prompt? LastPrompt;
+            // System.Speech only works on Windows
+            private readonly LinuxSpeech Linux = new LinuxSpeech();
 
             internal void Speak(string prompt) {
+                if (!OperatingSystem.IsWindows()) {
+                    Linux.Speak(prompt, m_Volume);
+                    return;
+                }
+
                 if (Synth == null) {
                     Synth = new SpeechSynthesizer();
                     Synth.SetOutputToDefaultAudioDevice();
@@ -41,6 +54,11 @@ namespace ToNSaveManager.Utils.JSPlugins.API {
             }
 
             internal void Stop() {
+                if (!OperatingSystem.IsWindows()) {
+                    Linux.Stop();
+                    return;
+                }
+
                 LastPrompt = null;
                 Synth?.SpeakAsyncCancelAll();
             }

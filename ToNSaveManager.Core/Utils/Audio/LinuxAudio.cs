@@ -30,6 +30,27 @@ namespace ToNSaveManager.Utils.Audio {
             return Process.Start(info) ?? throw new InvalidOperationException("Could not start " + fileName);
         }
 
+        /// <summary>Kills the process if it still runs and disposes it.</summary>
+        internal static void StopProcess(Process? process) {
+            if (process == null) return;
+
+            try {
+                if (!process.HasExited) process.Kill();
+            } catch (InvalidOperationException) {
+                // Already exited
+            }
+            process.Dispose();
+        }
+
+        /// <returns>False if the process is null, exited or disposed.</returns>
+        internal static bool IsRunning(Process? process) {
+            try {
+                return process != null && !process.HasExited;
+            } catch (InvalidOperationException) {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Starts a player that reads a sound file from stdin,
         /// or raw 32-bit float samples if <paramref name="sampleRate"/> and <paramref name="channels"/> are given.

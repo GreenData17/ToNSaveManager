@@ -15,12 +15,7 @@ namespace ToNSaveManager.Utils.Audio {
                 return;
             }
 
-            try {
-                if (m_Process != null && !m_Process.HasExited) m_Process.Kill();
-            } catch (InvalidOperationException) {
-                // Already exited
-            }
-            m_Process?.Dispose();
+            LinuxAudio.StopProcess(m_Process);
             m_Process = null;
         }
 
