@@ -211,13 +211,13 @@ namespace ToNSaveManager.Utils
             ParamAlive, ParamReborn, ParamDamaged, ParamMaster, ParamDeath, ParamPages, ParamItemStatus,
             ParamPlayerCount
         ];
-        const string ParameterFileName = "osc_parameters.txt";
+        static readonly string ParameterFilePath = Path.Combine(AppCore.UserFilesDirectory, "osc_parameters.txt");
         internal static void Initialize() {
             SendData(true);
 
             try {
-                if (!Settings.Get.OSCEnabled || File.Exists(ParameterFileName)) return;
-                File.WriteAllText(ParameterFileName, string.Join(',', ParamAll));
+                if (!Settings.Get.OSCEnabled || File.Exists(ParameterFilePath)) return;
+                File.WriteAllText(ParameterFilePath, string.Join(',', ParamAll));
             } catch { }
         }
 

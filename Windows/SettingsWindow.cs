@@ -406,7 +406,7 @@ namespace ToNSaveManager.Windows
 
         private void linkOpenRGB_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             RGBProfile.EnsureFile();
-            MainWindow.OpenExternalLink(RGBProfile.FileName);
+            MainWindow.OpenExternalLink(RGBProfile.FilePath);
         }
 
         private void RoundInfoTemplate_Control_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e) {

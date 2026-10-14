@@ -133,7 +133,7 @@ namespace ToNSaveManager.Utils.OpenRGB
                     rgbKeys[nameKey] = keys;
                 }
 
-                File.WriteAllText(RGBProfile.GeneratedFileName, JsonConvert.SerializeObject(rgbKeys, Formatting.Indented));
+                File.WriteAllText(RGBProfile.GeneratedFilePath, JsonConvert.SerializeObject(rgbKeys, Formatting.Indented));
 
                 UpdateColorAnimation();
                 SetIsAlive();

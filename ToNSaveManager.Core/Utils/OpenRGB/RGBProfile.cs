@@ -2,13 +2,16 @@
 
 namespace ToNSaveManager.Utils.OpenRGB {
     internal class RGBProfile {
-        internal static RGBProfile Instance = Import();
-
         internal const string FileName = "OpenRGB_Setup.json";
         internal const string GeneratedFileName = "openrgb_device_keys.json";
+        // Before Instance, which reads the file
+        internal static readonly string FilePath = Path.Combine(AppCore.UserFilesDirectory, FileName);
+        internal static readonly string GeneratedFilePath = Path.Combine(AppCore.UserFilesDirectory, GeneratedFileName);
+
+        internal static RGBProfile Instance = Import();
 
         internal static void EnsureFile() {
-            if (!File.Exists(FileName)) Instance.Export();
+            if (!File.Exists(FilePath)) Instance.Export();
         }
 
         public string IP = "127.0.0.1";
@@ -57,15 +60,15 @@ namespace ToNSaveManager.Utils.OpenRGB {
         ];
 
         internal void Export() {
-            File.WriteAllText(FileName, JsonConvert.SerializeObject(this, Formatting.Indented));
+            File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
         internal static RGBProfile Import() {
             RGBProfile? profile = null;
 
             try {
-                if (File.Exists(FileName)) {
-                    string content = File.ReadAllText(FileName);
+                if (File.Exists(FilePath)) {
+                    string content = File.ReadAllText(FilePath);
                     profile = JsonConvert.DeserializeObject<RGBProfile>(content);
                 }
 

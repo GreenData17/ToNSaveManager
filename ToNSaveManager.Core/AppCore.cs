@@ -19,6 +19,9 @@ namespace ToNSaveManager
         internal static readonly string DataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ProgramName);
         // Legacy path is mostly for Windows users, or for linux users that managed to get it to run via proton
         internal static string LegacyDataLocation => Path.Combine(GetVRChatDataLocation(), ProgramName);
+        // Files the user edits (scripts, OSC and OpenRGB setup)
+        // Windows: next to the program | Linux: ~/.config/ToNSaveManager, the program folder can be read-only
+        internal static readonly string UserFilesDirectory = OperatingSystem.IsWindows() ? ProgramDirectory : DataLocation;
 
         /// <summary>
         /// True once the frontend finished starting up and the log watcher is running.
