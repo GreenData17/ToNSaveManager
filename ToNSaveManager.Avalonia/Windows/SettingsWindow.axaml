@@ -1,0 +1,166 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:ToNSaveManager.Windows.Controls"
+        x:Class="ToNSaveManager.Windows.SettingsWindow"
+        Title="Settings"
+        Width="585" Height="614"
+        MinWidth="184" MinHeight="161"
+        CanMinimize="False" CanMaximize="False">
+
+    <Window.Styles>
+        <Style Selector="CheckBox">
+            <Setter Property="MinHeight" Value="19" />
+            <Setter Property="Padding" Value="3,0,0,0" />
+            <Setter Property="Margin" Value="20,0,3,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="CheckBox.sub">
+            <Setter Property="Margin" Value="50,0,3,0" />
+        </Style>
+        <Style Selector="StackPanel#flowLayoutPanel1 > CheckBox">
+            <Setter Property="Margin" Value="23,1,3,1" />
+        </Style>
+        <Style Selector="StackPanel#flowLayoutPanel1 > CheckBox.sub">
+            <Setter Property="Margin" Value="53,1,3,1" />
+        </Style>
+        <Style Selector="StackPanel.row">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Margin" Value="3,1,3,1" />
+        </Style>
+        <Style Selector="TextBlock.group">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="3,15,3,0" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel Margin="8">
+        <ComboBox x:Name="languageSelectBox" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="23"
+                  DragDrop.AllowDrop="True"
+                  SelectionChanged="languageSelectBox_SelectedIndexChanged" />
+
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,6,53" Height="24" Margin="0,4,0,0">
+            <Button x:Name="btnCheckForUpdates" Grid.Column="0" Content="Check For Updates" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnCheckForUpdates_Click" />
+            <Button x:Name="btnOpenData" Grid.Column="2" Content="Data" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnOpenData_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="setDataLocationToolStripMenuItem" Header="Custom Data Location">
+                            <MenuItem x:Name="ctxItemPickFolder" Header="Pick Folder" Click="ctxItemPickFolder_Click" />
+                            <MenuItem x:Name="ctxItemResetToDefault" Header="Reset To Default" Click="ctxItemResetToDefault_Click" />
+                        </MenuItem>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+        </Grid>
+
+        <Border x:Name="panel2" Margin="0,6,0,0" BorderBrush="{StaticResource ButtonBorder}" BorderThickness="1" Padding="3">
+            <ScrollViewer>
+                <StackPanel x:Name="flowLayoutPanel1">
+                    <TextBlock x:Name="labelGroupGeneral" Classes="group" Margin="3,0,3,0" Text="General" />
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkSkipParsedLogs" Tag="SkipParsedLogs" Content="Skip Parsed Logs (!)" />
+                        <c:LinkLabel x:Name="linkLogUpdateRate" Text="(Set Update Rate)" />
+                    </StackPanel>
+                    <c:LinkLabel x:Name="linkOpenLogs" Text="> FIND LATEST LOG FILE &lt;" Margin="53,1,3,1" Padding="3,0" Background="{StaticResource ListAlt}" HorizontalAlignment="Left" IsVisible="False" />
+                    <c:LinkLabel x:Name="linkCopyLogs" Text="> COPY INSTANCE LOGS &lt;" Margin="53,1,3,1" Padding="3,0" Background="{StaticResource ListAlt}" HorizontalAlignment="Left" IsVisible="False" />
+                    <CheckBox x:Name="checkWebSocketServer" Tag="WebSocketEnabled" Content="WebSocket API Server" />
+                    <CheckBox x:Name="checkWebTrackerComp" Classes="sub" Tag="WebTrackerCompatibility" Content="Live Tracker Compatibility" />
+                    <CheckBox x:Name="checkAutoCopy" Tag="AutoCopy" Content="Auto Clipboard Copy" />
+                    <CheckBox x:Name="checkCopyOnOpen" Classes="sub" Tag="CopyOnOpen" Content="Copy On Open" />
+                    <CheckBox x:Name="checkCopyOnJoin" Classes="sub" Tag="CopyOnJoin" Content="Copy On Join" />
+                    <CheckBox x:Name="checkCopyOnSave" Classes="sub" Tag="CopyOnSave" Content="Copy On Save" />
+                    <CheckBox x:Name="checkPlayerNames" Tag="SaveNames" Content="Collect Player Names" />
+                    <CheckBox x:Name="checkSaveTerrors" Tag="SaveRoundInfo" Content="Save Round Info" />
+                    <CheckBox x:Name="checkShowWinLose" Classes="sub" Tag="ShowWinLose" Content="Show Save Symbols" />
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkSaveTerrorsNote" Classes="sub" Tag="SaveRoundNote" Content="Automatic Note" />
+                        <c:LinkLabel x:Name="linkAutoNoteEdit" Text="(Edit)" />
+                    </StackPanel>
+                    <Border x:Name="flowRoundInfoFilePanel" Margin="3,1,3,1" BorderBrush="{StaticResource ButtonBorder}" HorizontalAlignment="Left">
+                        <StackPanel>
+                            <CheckBox x:Name="checkRoundToFile" Tag="RoundInfoToFile" Content="Round Info to File" />
+                            <StackPanel x:Name="flowRoundInfoFiles" Margin="50,0,0,0" />
+                            <c:LinkLabel x:Name="linkAddInfoFile" Text="(Add File)" Padding="50,0,0,0" Margin="0,0,0,2" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock x:Name="labelGroupDiscord" Classes="group" Text="Discord Features" />
+                    <CheckBox x:Name="checkDiscordBackup" Tag="DiscordWebhookEnabled" Content="Automatic Backup (Webhook)" />
+                    <CheckBox x:Name="checkDiscordPresence" Tag="DiscordRichPresence" Content="Enable Rich Presence" />
+                    <StackPanel x:Name="flowDiscordStateText" Classes="row">
+                        <CheckBox x:Name="checkDiscordCustomState" Classes="sub" Tag="DiscordCustomState" Content="Custom State Text" />
+                        <c:LinkLabel x:Name="linkEditDiscordState" Text="(Edit)" />
+                    </StackPanel>
+                    <StackPanel x:Name="flowDiscordDetailsText" Classes="row">
+                        <CheckBox x:Name="checkDiscordCustomDetails" Classes="sub" Tag="DiscordCustomDetails" Content="Custom Details Text" />
+                        <c:LinkLabel x:Name="linkEditDiscordDetails" Text="(Edit)" />
+                    </StackPanel>
+                    <StackPanel x:Name="flowDiscordImageText" Classes="row">
+                        <CheckBox x:Name="checkDiscordCustomImageText" Classes="sub" Tag="DiscordCustomImageText" Content="Custom Image Text" />
+                        <c:LinkLabel x:Name="linkEditDiscordImage" Text="(Edit)" />
+                    </StackPanel>
+                    <StackPanel x:Name="flowDiscordIconText" Classes="row">
+                        <CheckBox x:Name="checkDiscordCustomIcon" Classes="sub" Tag="DiscordCustomIconText" Content="Custom Icon Text" />
+                        <c:LinkLabel x:Name="linkEditDiscordIcon" Text="(Edit)" />
+                    </StackPanel>
+                    <StackPanel x:Name="flowDiscordIconStart" Classes="row">
+                        <CheckBox x:Name="checkDiscordCustomStart" Classes="sub" Tag="DiscordCustomStartText" Content="Custom Start Text" />
+                        <c:LinkLabel x:Name="linkEditDiscordStart" Text="(Edit)" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="labelGroupNotifications" Classes="group" Text="Notifications" />
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkPlayAudioSave" Tag="PlayAudioSave" Content="Play Sound on Save" />
+                        <c:LinkLabel x:Name="linkSelectAudioSave" Text="(Select Audio File)" />
+                    </StackPanel>
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkPlayAudioCopy" Tag="PlayAudioCopy" Content="Play Sound on Copy" />
+                        <c:LinkLabel x:Name="linkSelectAudioCopy" Text="(Select Audio File)" />
+                    </StackPanel>
+                    <CheckBox x:Name="checkXSOverlay" Tag="XSOverlay" Content="XSOverlay Popup" />
+
+                    <TextBlock x:Name="labelGroupOSC" Classes="group" Text="OSC" />
+                    <CheckBox x:Name="checkOSCEnabled" Tag="OSCEnabled" Content="Send OSC Parameters" />
+                    <StackPanel x:Name="flowTerrorColor" Classes="row">
+                        <CheckBox x:Name="checkOSCSendColor" Classes="sub" Tag="OSCSendColor" Content="Send Terror Color" />
+                        <c:LinkLabel x:Name="linkOSCFormat" Text="(Change Format)" Padding="4,0" Background="{StaticResource ListAlt}" />
+                        <TextBlock x:Name="labelOSCFormat" Text="HSV" Padding="4,0" Background="{StaticResource ListAlt}" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkOSCSendDamage" Classes="sub" Tag="OSCDamagedEvent" Content="Send Damage Event (INT)" />
+                        <c:LinkLabel x:Name="linkSetDamageOutput" Text="(Set Output)" Padding="0,0,3,0" />
+                        <c:LinkLabel x:Name="linkSetDamageInterval" Text="(Set Interval)" />
+                    </StackPanel>
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkOSCDeathEvent" Classes="sub" Tag="OSCDeathEvent" Content="Send Death ID" />
+                        <c:LinkLabel x:Name="linkEditDeathID" Text="(Edit)" Padding="0,0,3,0" />
+                        <c:LinkLabel x:Name="linkSetDeathDecay" Text="(Set Decay)" Padding="0,0,3,0" />
+                        <c:LinkLabel x:Name="linkSetDeathCooldown" Text="(Set Cooldown)" Padding="0,0,3,0" />
+                    </StackPanel>
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkOSCMasterChange" Classes="sub" Tag="OSCMasterChange" Content="Send Master Change (BOOL)" />
+                        <c:LinkLabel x:Name="linkSetMasterInterval" Text="(Set Interval)" />
+                    </StackPanel>
+                    <StackPanel Classes="row">
+                        <CheckBox x:Name="checkSendChatbox" Tag="OSCSendChatbox" Content="Send Chatbox Message" />
+                        <c:LinkLabel x:Name="linkEditChatbox" Text="(Edit)" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="labelGroupFormat" Classes="group" Text="Time Format" />
+                    <CheckBox x:Name="check24Hour" Tag="Use24Hour" Content="24 Hour Time" />
+                    <CheckBox x:Name="checkInvertMD" Tag="InvertMD" Content="Invert Month/Day" />
+                    <CheckBox x:Name="checkShowSeconds" Tag="ShowSeconds" Content="Show Seconds" />
+                    <CheckBox x:Name="checkShowDate" Tag="ShowDate" Content="Right Panel Date" />
+                    <CheckBox x:Name="checkShowTime" Tag="ShowTime" Content="Right Panel Time" />
+
+                    <TextBlock x:Name="labelGroupStyle" Classes="group" Text="Style" />
+                    <CheckBox x:Name="checkColorObjectives" Tag="ColorfulObjectives" Content="Colorful Objectives" />
+                    <StackPanel Classes="row" Margin="3,1,3,4">
+                        <CheckBox x:Name="checkOpenRGBEnabled" Tag="OpenRGBEnabled" Content="OpenRGB Support" />
+                        <c:LinkLabel x:Name="linkOpenRGB" Text="(Open JSON)" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </DockPanel>
+</Window>

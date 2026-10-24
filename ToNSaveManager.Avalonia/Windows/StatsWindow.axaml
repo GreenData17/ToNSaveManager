@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:w="using:ToNSaveManager.Windows"
+        x:Class="ToNSaveManager.Windows.StatsWindow"
+        Title="ToN Stats Tracker"
+        Width="324" Height="201"
+        MinWidth="324" MinHeight="201"
+        CanMinimize="False"
+        ShowInTaskbar="False">
+
+    <Border Margin="7" Background="{StaticResource ListBack}" BorderBrush="{StaticResource ButtonBorder}" BorderThickness="1"
+            TextElement.Foreground="{StaticResource ListFore}">
+        <ScrollViewer>
+            <ItemsControl x:Name="listBox1">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="w:StatRow">
+                        <Grid Background="{Binding Background}" MinHeight="15"
+                              ToolTip.Tip="{Binding Tooltip}" ToolTip.ShowDelay="0">
+                            <TextBlock Text="{Binding Value}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Name}" Background="{Binding Background}" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="2,0" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Border>
+</Window>

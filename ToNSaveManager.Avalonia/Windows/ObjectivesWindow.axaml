@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:w="using:ToNSaveManager.Windows"
+        x:Class="ToNSaveManager.Windows.ObjectivesWindow"
+        Title="ToN Objectives"
+        Width="278" Height="331"
+        CanMinimize="False" CanMaximize="False"
+        ShowInTaskbar="False">
+
+    <Border Margin="12" Background="{StaticResource ListBack}" BorderBrush="{StaticResource ButtonBorder}" BorderThickness="1">
+        <ScrollViewer>
+            <ItemsControl x:Name="listBox1">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="w:ObjectiveRow">
+                        <Border Background="{Binding Background}" Padding="2,0" MinHeight="15"
+                                ToolTip.Tip="{Binding Tooltip}" ToolTip.ShowDelay="0">
+                            <TextBlock Text="{Binding Text}" Foreground="{Binding Foreground}" TextDecorations="{Binding Decorations}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Border>
+</Window>

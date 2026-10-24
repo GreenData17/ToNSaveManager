@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ToNSaveManager</RootNamespace>
+    <!-- Same name as the WinForms app, so Core's InternalsVisibleTo applies -->
+    <AssemblyName>ToNSaveManager</AssemblyName>
+    <ApplicationIcon>..\Resources\icon.ico</ApplicationIcon>
+    <Version>1.0.0.2</Version>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="..\Resources\FiraCode.ttf;..\Resources\support_icon.png" Link="Assets\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="12.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ToNSaveManager.Core\ToNSaveManager.Core.csproj" />
+  </ItemGroup>
+
+</Project>

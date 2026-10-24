@@ -1,0 +1,151 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ToNSaveManager.App"
+             RequestedThemeVariant="Dark">
+
+    <!-- Palette -->
+    <Application.Resources>
+        <Color x:Key="WindowBackColor">#2E3440</Color>
+        <Color x:Key="ListBackColor">#3B4252</Color>
+        <Color x:Key="ListAltColor">#434C5E</Color>
+        <Color x:Key="HoverColor">#4C566A</Color>
+        <Color x:Key="LightColor">#D8DEE9</Color>
+        <Color x:Key="ForeColor">#ECEFF4</Color>
+        <Color x:Key="MutedColor">#8A93A6</Color>
+        <Color x:Key="BorderColor">#7A7A7A</Color>
+        <Color x:Key="HighlightColor">#5E81AC</Color>
+        <Color x:Key="LinkColor">#88C0D0</Color>
+        <Color x:Key="DangerColor">#E0727C</Color>
+        <Color x:Key="WarningColor">#EBCB8B</Color>
+
+        <SolidColorBrush x:Key="WindowBack" Color="{StaticResource WindowBackColor}" />
+        <SolidColorBrush x:Key="ListBack" Color="{StaticResource ListBackColor}" />
+        <SolidColorBrush x:Key="ListAlt" Color="{StaticResource ListAltColor}" />
+        <SolidColorBrush x:Key="ListFore" Color="{StaticResource ForeColor}" />
+        <SolidColorBrush x:Key="Muted" Color="{StaticResource MutedColor}" />
+        <SolidColorBrush x:Key="ButtonBorder" Color="{StaticResource BorderColor}" />
+        <SolidColorBrush x:Key="Highlight" Color="{StaticResource HighlightColor}" />
+        <SolidColorBrush x:Key="Link" Color="{StaticResource LinkColor}" />
+        <SolidColorBrush x:Key="Danger" Color="{StaticResource DangerColor}" />
+        <SolidColorBrush x:Key="Warning" Color="{StaticResource WarningColor}" />
+        <FontFamily x:Key="FiraCode">avares://ToNSaveManager/Assets/FiraCode.ttf#Fira Code</FontFamily>
+
+        <!-- Simple theme colors -->
+        <StaticResource x:Key="ThemeBackgroundColor" ResourceKey="WindowBackColor" />
+        <StaticResource x:Key="ThemeForegroundColor" ResourceKey="ForeColor" />
+        <StaticResource x:Key="ThemeForegroundLowColor" ResourceKey="MutedColor" />
+        <StaticResource x:Key="ThemeForegroundMidColor" ResourceKey="LightColor" />
+        <StaticResource x:Key="ThemeDisabledColor" ResourceKey="MutedColor" />
+        <StaticResource x:Key="ThemeControlLowColor" ResourceKey="ListBackColor" />
+        <StaticResource x:Key="ThemeControlMidColor" ResourceKey="ListAltColor" />
+        <StaticResource x:Key="ThemeControlMidHighColor" ResourceKey="HoverColor" />
+        <StaticResource x:Key="ThemeControlHighColor" ResourceKey="HoverColor" />
+        <StaticResource x:Key="ThemeControlVeryHighColor" ResourceKey="LightColor" />
+        <StaticResource x:Key="ThemeControlHighlightLowColor" ResourceKey="ListAltColor" />
+        <StaticResource x:Key="ThemeControlHighlightMidColor" ResourceKey="HoverColor" />
+        <StaticResource x:Key="ThemeControlHighlightHighColor" ResourceKey="HighlightColor" />
+        <StaticResource x:Key="ThemeBorderLowColor" ResourceKey="HoverColor" />
+        <StaticResource x:Key="ThemeBorderMidColor" ResourceKey="BorderColor" />
+        <StaticResource x:Key="ThemeBorderHighColor" ResourceKey="LightColor" />
+        <StaticResource x:Key="ThemeAccentColor" ResourceKey="HighlightColor" />
+        <StaticResource x:Key="HighlightForegroundColor" ResourceKey="ForeColor" />
+
+        <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{StaticResource WindowBackColor}" />
+        <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{StaticResource ForeColor}" />
+        <SolidColorBrush x:Key="ThemeForegroundLowBrush" Color="{StaticResource MutedColor}" />
+        <SolidColorBrush x:Key="ThemeControlLowBrush" Color="{StaticResource ListBackColor}" />
+        <SolidColorBrush x:Key="ThemeControlMidBrush" Color="{StaticResource ListAltColor}" />
+        <SolidColorBrush x:Key="ThemeControlMidHighBrush" Color="{StaticResource HoverColor}" />
+        <SolidColorBrush x:Key="ThemeControlHighBrush" Color="{StaticResource HoverColor}" />
+        <SolidColorBrush x:Key="ThemeControlVeryHighBrush" Color="{StaticResource LightColor}" />
+        <SolidColorBrush x:Key="ThemeControlHighlightLowBrush" Color="{StaticResource ListAltColor}" />
+        <SolidColorBrush x:Key="ThemeControlHighlightMidBrush" Color="{StaticResource HoverColor}" />
+        <SolidColorBrush x:Key="ThemeControlHighlightHighBrush" Color="{StaticResource HighlightColor}" />
+        <SolidColorBrush x:Key="ThemeBorderLowBrush" Color="{StaticResource HoverColor}" />
+        <SolidColorBrush x:Key="ThemeBorderMidBrush" Color="{StaticResource BorderColor}" />
+        <SolidColorBrush x:Key="ThemeBorderHighBrush" Color="{StaticResource LightColor}" />
+        <SolidColorBrush x:Key="ThemeAccentBrush" Color="{StaticResource HighlightColor}" />
+        <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}" />
+        <SolidColorBrush x:Key="HighlightForegroundBrush" Color="{StaticResource ForeColor}" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <SimpleTheme />
+
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{StaticResource WindowBack}" />
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="FontFamily" Value="{StaticResource FiraCode}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <!-- Flat buttons -->
+        <Style Selector="Button">
+            <Setter Property="Background" Value="{StaticResource WindowBack}" />
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ListBack}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorder}" />
+        </Style>
+        <Style Selector="Button:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ListAlt}" />
+        </Style>
+        <Style Selector="Button:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource WindowBack}" />
+        </Style>
+        <Style Selector="Button:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+        </Style>
+
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="{StaticResource ListBack}" />
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="2,0" />
+            <Setter Property="MinHeight" Value="15" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Highlight}" />
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Highlight}" />
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{StaticResource ListBack}" />
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="CaretBrush" Value="{StaticResource ListFore}" />
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{StaticResource ListBack}" />
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorder}" />
+        </Style>
+
+        <Style Selector="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource ListFore}" />
+            <Setter Property="Background" Value="{StaticResource ListBack}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonBorder}" />
+        </Style>
+
+        <Style Selector="GridSplitter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </Application.Styles>
+</Application>

@@ -1,0 +1,73 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ToNSaveManager.Windows.EmulatorWindow"
+        Title="ToN Parameter Emulator"
+        Width="334" Height="384"
+        MinWidth="334" MinHeight="61"
+        CanMaximize="False">
+
+    <Window.Styles>
+        <Style Selector="ComboBox">
+            <Setter Property="Width" Value="180" />
+            <Setter Property="Height" Value="23" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style Selector="Grid.row">
+            <Setter Property="Height" Value="23" />
+        </Style>
+        <Style Selector="Grid.row > TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="82" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style Selector="WrapPanel > Button">
+            <Setter Property="Height" Value="27" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Padding" Value="6,0" />
+        </Style>
+    </Window.Styles>
+
+    <StackPanel Margin="10">
+        <StackPanel x:Name="mainPanel">
+            <Grid Classes="row">
+                <TextBlock x:Name="label1" Text="Round Type" />
+                <ComboBox x:Name="comboRoundType" SelectionChanged="comboRoundType_SelectedIndexChanged" />
+            </Grid>
+            <Grid Classes="row">
+                <CheckBox x:Name="checkBoxIsKiller" Content="Is Killer" />
+            </Grid>
+            <Grid Classes="row">
+                <TextBlock x:Name="label3" Text="Location" />
+                <ComboBox x:Name="comboLocation" SelectionChanged="comboLocation_SelectedIndexChanged" />
+            </Grid>
+            <Grid Classes="row">
+                <CheckBox x:Name="checkSpecial" Content="Special Encounter CheckBox" Width="176" />
+            </Grid>
+            <Grid Classes="row">
+                <TextBlock x:Name="label2" Text="Monster" />
+                <ComboBox x:Name="comboMonster" SelectionChanged="comboMonster_SelectedIndexChanged" />
+            </Grid>
+            <Grid Classes="row">
+                <ComboBox x:Name="comboMonster2" SelectionChanged="comboMonster2_SelectedIndexChanged" />
+            </Grid>
+            <Grid Classes="row">
+                <ComboBox x:Name="comboMonster3" SelectionChanged="comboMonster3_SelectedIndexChanged" />
+            </Grid>
+        </StackPanel>
+
+        <WrapPanel Margin="0,10,0,0">
+            <Button x:Name="buttonStepStart" TabIndex="0" Content="Start" MinWidth="43" Click="buttonStep_Click" />
+            <Button x:Name="buttonStepKillerSet" TabIndex="1" Content="Killer Set" MinWidth="64" Click="buttonStep_Click" />
+            <Button x:Name="buttonStepReveal" TabIndex="2" Content="Reveal" MinWidth="53" Click="buttonStep_Click" />
+            <Button x:Name="buttonDamage" TabIndex="4" Content="Damage" MinWidth="63" Foreground="{StaticResource Danger}" Click="buttonStep_Click" />
+            <Button x:Name="buttonDeath" TabIndex="5" Content="Death" MinWidth="50" Foreground="{StaticResource Danger}" Click="buttonStep_Click" />
+            <Button x:Name="buttonStepEndRound" TabIndex="3" Content="End Round" MinWidth="77" Click="buttonStep_Click" />
+        </WrapPanel>
+
+        <CheckBox x:Name="checkTrackerLines" Content="Send Tracker Log Lines" HorizontalAlignment="Left" Margin="3,6,3,0"
+                  ToolTip.Tip="Also sends the log lines the game would write to WebSocket clients, like tontrack.me.&#x0a;Needs 'WebSocket API Server' and 'Live Tracker Compatibility'." />
+    </StackPanel>
+</Window>

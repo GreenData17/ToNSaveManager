@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ToNSaveManager.Windows.EditWindow"
+        Title="Note Editor"
+        Width="426"
+        SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+
+    <StackPanel Margin="10" Spacing="9">
+        <TextBox x:Name="textBox1" Height="23" Padding="2,1" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" />
+
+        <Grid ColumnDefinitions="75,6,*,6,75" Height="29" Margin="3,0">
+            <Button x:Name="button1" Grid.Column="0" Content="Save" IsDefault="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="button1_Click" />
+            <Button x:Name="buttonInsert" Grid.Column="2" Content="Insert Template Key" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="buttonInsert_Click">
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="contextMenuStrip1" />
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="button2" Grid.Column="4" Content="Cancel" IsCancel="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="button2_Click" />
+        </Grid>
+    </StackPanel>
+</Window>

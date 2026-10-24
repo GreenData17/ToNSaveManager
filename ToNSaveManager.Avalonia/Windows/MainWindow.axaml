@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:w="using:ToNSaveManager.Windows"
+        x:Class="ToNSaveManager.Windows.MainWindow"
+        Title="ToN Save Manager"
+        Width="529" Height="271"
+        MinWidth="412" MinHeight="256"
+        CanMaximize="False"
+        Opened="mainWindow_Opened"
+        Closing="MainWindow_FormClosing">
+
+    <Window.Resources>
+        <DataTemplate x:Key="RowTemplate" x:DataType="w:ListRow">
+            <TextBlock Text="{Binding Text}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                       ToolTip.Tip="{Binding Tooltip}" ToolTip.ShowDelay="0" />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid x:Name="splitContainer1" Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="178" MinWidth="25" />
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="*" MinWidth="25" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" RowDefinitions="*,6,24">
+            <ListBox x:Name="listBoxKeys" ItemTemplate="{StaticResource RowTemplate}" />
+            <Button x:Name="btnSettings" Grid.Row="2" Content="Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSettings_Click" />
+        </Grid>
+
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" DragCompleted="splitContainer1_SplitterMoved" />
+
+        <Grid Grid.Column="2" RowDefinitions="*,6,24">
+            <ListBox x:Name="listBoxEntries" ItemTemplate="{StaticResource RowTemplate}" />
+            <Grid Grid.Row="2" ColumnDefinitions="*,6,58,6,58,6,24">
+                <Button x:Name="btnObjectives" Grid.Column="0" Content="Objectives" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnObjectives_Click" />
+                <Button x:Name="btnStats" Grid.Column="2" Content="Stats" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnStats_Click" />
+                <Button x:Name="linkWiki" Grid.Column="4" Content="Wiki" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="linkWiki_Clicked" />
+                <Button x:Name="linkSupport" Grid.Column="6" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="linkSupport_Click">
+                    <Image Source="avares://ToNSaveManager/Assets/support_icon.png" Width="11" Height="10" />
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
