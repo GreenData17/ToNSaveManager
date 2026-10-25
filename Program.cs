@@ -145,54 +145,26 @@ namespace ToNSaveManager
                 .GetManifestResourceStream($"ToNSaveManager.Resources.{name}");
         }
 
-        internal static Version? GetVersion()
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            return assembly.GetName().Version;
-        }
-
         /// <summary>
         /// Check for updates on the GitHub repo.
         /// </summary>
         /// <param name="showUpToDate">Shows a message if there's no updates available.</param>
         internal static bool StartCheckForUpdate(bool showUpToDate = false)
         {
-            Version? currentVersion = GetVersion();
-            if (currentVersion == null) return false; // No current version?
+            UpdateStatus status = UpdateChecker.Check(showUpToDate, "ToNSaveManager.zip", out GitHubRelease? release, out GitHubRelease.Asset? asset, out string changelog);
 
-            Logger.Log("Checking for updates...");
-            GitHubRelease? release = GitHubRelease.GetLatest();
-            if (release == null || release.assets.Length == 0 || (!showUpToDate && release.tag_name == Settings.Get.IgnoreRelease)) return false;
-            GitHubRelease.Asset? asset = release.assets.FirstOrDefault(v => v.name == "ToNSaveManager.zip" && v.content_type == "application/zip" && v.state == "uploaded");
-            if (asset == null) return false;
-
-            Logger.Log("Latest release: " + release.tag_name);
-            if (Version.TryParse(release.tag_name, out Version? releaseVersion) && releaseVersion > currentVersion)
+            if (status == UpdateStatus.Available && release != null && asset != null)
             {
-                const string log_start = "[changelog]: <> (START)";
-                const string log_end = "[changelog]: <> (END)";
-
-                int start = release.body.IndexOf(log_start, StringComparison.InvariantCulture);
-                int end = release.body.IndexOf(log_end, StringComparison.InvariantCulture);
-                string body = string.Empty;
-
-                if (start > -1 && end > (start + log_start.Length) && end > start)
-                {
-                    start += log_start.Length;
-                    body = "\n\n" + release.body.Substring(start, end - start).Trim();
-                }
-
-                DialogResult result = MessageBox.Show((LANG.S("MESSAGE.UPDATE_AVAILABLE") ?? "A new update have been released on GitHub.\n\nWould you like to automatically download and update to the new version?") + body, LANG.S("MESSAGE.UPDATE_AVAILABLE.TITLE") ?? "New update available", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                DialogResult result = MessageBox.Show((LANG.S("MESSAGE.UPDATE_AVAILABLE") ?? "A new update have been released on GitHub.\n\nWould you like to automatically download and update to the new version?") + changelog, LANG.S("MESSAGE.UPDATE_AVAILABLE.TITLE") ?? "New update available", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (result == DialogResult.Yes)
                 {
                     GitHubUpdate.Set(release, asset);
                     return true;
                 } else if (!showUpToDate)
                 {
-                    Settings.Get.IgnoreRelease = release.tag_name;
-                    Settings.Export();
+                    UpdateChecker.Ignore(release);
                 }
-            } else if (showUpToDate)
+            } else if (status == UpdateStatus.UpToDate && showUpToDate)
             {
                 MessageBox.Show(LANG.S("MESSAGE.UPDATE_UNAVAILABLE") ?? "No updates are currently available.", LANG.S("MESSAGE.UPDATE_UNAVAILABLE.TITLE") ?? "No updates available", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

@@ -126,7 +126,7 @@ namespace ToNSaveManager.Windows
             ctxItemPickFolder.Localize("SETTINGS.CUSTOM_DATA_PICK_FOLDER");
             ctxItemResetToDefault.Localize("SETTINGS.CUSTOM_DATA_RESET_DEFAULT");
 
-            string? versionString = Program.GetVersion()?.ToString();
+            string? versionString = AppCore.Version?.ToString();
             if (!string.IsNullOrEmpty(versionString))
                 toolTip.SetToolTip(btnCheckForUpdates, LANG.S("SETTINGS.VERSION", versionString) ?? $"Current Version {versionString}");
 

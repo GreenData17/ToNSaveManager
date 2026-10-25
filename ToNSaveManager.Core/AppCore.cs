@@ -23,6 +23,9 @@ namespace ToNSaveManager
         // Windows: next to the program | Linux: ~/.config/ToNSaveManager, the program folder can be read-only
         internal static readonly string UserFilesDirectory = OperatingSystem.IsWindows() ? ProgramDirectory : DataLocation;
 
+        // Version of the app, not of Core
+        internal static readonly Version? Version = Assembly.GetEntryAssembly()?.GetName().Version;
+
         /// <summary>
         /// True once the frontend finished starting up and the log watcher is running.
         /// Integrations (OSC, WebSocket, RGB, ...) stay quiet until then.

@@ -121,7 +121,7 @@ namespace ToNSaveManager.Windows {
             ctxItemPickFolder.Localize("SETTINGS.CUSTOM_DATA_PICK_FOLDER");
             ctxItemResetToDefault.Localize("SETTINGS.CUSTOM_DATA_RESET_DEFAULT");
 
-            string? versionString = Assembly.GetEntryAssembly()?.GetName().Version?.ToString();
+            string? versionString = AppCore.Version?.ToString();
             if (!string.IsNullOrEmpty(versionString))
                 ToolTip.SetTip(btnCheckForUpdates, LANG.S("SETTINGS.VERSION", versionString) ?? $"Current Version {versionString}");
 
@@ -590,8 +590,7 @@ namespace ToNSaveManager.Windows {
         }
 
         private void btnCheckForUpdates_Click(object? sender, RoutedEventArgs e) {
-            // TODO: Update check
-            MainWindow.OpenExternalLink("https://github.com/ChrisFeline/ToNSaveManager/releases");
+            MainWindow.OpenExternalLink(UpdateChecker.ReleasesUrl);
         }
 
         private void btnOpenData_Click(object? sender, RoutedEventArgs e) {
